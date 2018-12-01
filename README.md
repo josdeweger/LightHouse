@@ -1,3 +1,4 @@
+![Delcom Signal Light](https://www.delcomproducts.com/images/BeaconSRed.jpg =450x)
 
 # LightHouse - a Build Status Light
 Cross platform build status light that reads build results from the build service, and aggregates the results into a single result to set the signal light. Currently supports Visual Studio Team Services (VSTS) and the [Delcom Signal Light](https://www.delcomproducts.com/productdetails.asp?PartNumber=904007-B) (USB Light), but can be extended with other build services and Signal Lights.
