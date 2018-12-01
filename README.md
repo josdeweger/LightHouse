@@ -6,7 +6,7 @@ Tested on Windows 10 and Raspberry Pi 3 running Ubuntu Core 16
 
 # Getting started
 1. Connect your [Delcom Signal Light](https://www.delcomproducts.com/productdetails.asp?PartNumber=904007-B)
-2. Run the following command: 
+2. Run the following command in the `LightHouse.ConsoleApp` folder: 
 ```
 dotnet run --s "<service>" --i "<instance>" --c "<collection>" --p "<team projects, comma seperated>" --t "<token>"
 ```
