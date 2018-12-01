@@ -1,5 +1,5 @@
 
-# LightHouse
+# LightHouse - a Build Status Light
 Cross platform build status light that reads build results from the build service, and aggregates the results into a single result to set the signal light. Currently supports Visual Studio Team Services (VSTS) and the Delcom Signal Light (USB Light), but can be extended with other build services and Signal Lights.
 Tested on Windows 10 and Raspberry Pi 3 running Ubuntu Core 16
 
