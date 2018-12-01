@@ -1,0 +1,46 @@
+﻿<Page x:Class="LightHouse.UwpApp.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:LightHouse.UwpApp"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+      mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="LastBuildTemplate">
+            <Grid
+                BorderBrush="Black"
+                BorderThickness="1">
+                <StackPanel
+                    Name="LastBuildStackPanel"
+                    Loaded="LastBuildStackPanel_OnLoaded"
+                    Orientation="Vertical" 
+                    HorizontalAlignment="Stretch"
+                    Padding="10">
+                    <StackPanel.Background>
+                        <SolidColorBrush Color="{Binding Converter={StaticResource ResultToColorConverter}}"/>
+                    </StackPanel.Background>
+                    <controls:HeaderedTextBlock Name="DefinitionId" Text="{Binding DefinitionId}" Visibility="Collapsed"></controls:HeaderedTextBlock>
+                    <controls:HeaderedTextBlock Header="Project" Text="{Binding DefinitionName}" Orientation="Vertical" Margin="10,5,0,0" />
+                    <controls:HeaderedTextBlock Header="Build number" Text="{Binding BuildNumber}" Orientation="Vertical" Margin="10,5,0,0" />
+                    <controls:HeaderedTextBlock Header="Start/Finish" Text="{Binding StartAndFinishTime}" Orientation="Vertical" Margin="10,5,0,0" />
+                    <controls:HeaderedTextBlock Header="Requested by" Text="{Binding RequestedBy}" Orientation="Vertical" Margin="10,5,0,0" />
+                    <controls:HeaderedTextBlock Header="Status" Text="{Binding Status}" Orientation="Vertical" Margin="10,5,0,0" />
+                    <controls:HeaderedTextBlock Header="Result" Text="{Binding Result}" Orientation="Vertical" Margin="10,5,0,0" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        
+    </Page.Resources>
+
+    <Grid>
+        <controls:AdaptiveGridView ItemsSource="{x:Bind LastBuilds}"
+                                   OneRowModeEnabled="False"
+                                   ItemHeight="370"
+                                   DesiredWidth="350"
+                                   SelectionMode="Single"
+                                   IsItemClickEnabled="False"
+                                   Name="LastBuildsGrid"
+                                   ItemTemplate="{StaticResource LastBuildTemplate}"/>
+    </Grid>
+</Page>
