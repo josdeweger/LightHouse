@@ -20,4 +20,5 @@ dotnet run --s "<service>" --i "<instance>" --c "<collection>" --p "<team projec
 |--|--|
 | Green | All builds were succesfull
 | Orange | One or more builds partially succeeded
-| Red | Build currently in progress
+| Red | One or more builds failed
+| Flashing | Build currently in progress
