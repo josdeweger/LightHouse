@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "LightHouse.ConsoleApp": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,9 +1,0 @@
-﻿<Application
-    x:Class="LightHouse.UwpApp.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:LightHouse.UwpApp">
-    <Application.Resources>
-        <local:ResultToColorConverter x:Key="ResultToColorConverter" />
-    </Application.Resources>
-</Application>

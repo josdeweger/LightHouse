@@ -267,6 +267,7 @@ LightHouse\.ConsoleApp/tools/*
 # NCrunch
 LightHouse\.v3\.ncrunch*
 
-**/App\.config
-
-LightHouse\.ConsoleApp/run\.sh
+# LightHouse specific
+src/LightHouse.UwpApp
+src/**/App\.config
+src/LightHouse\.ConsoleApp/run\.sh
