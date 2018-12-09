@@ -13,8 +13,7 @@ namespace LightHouse.ConsoleApp
         private static IControlBuildStatusLight _buildStatusLightController;
         private static ILogger _logger;
         private static ServiceProvider _serviceProvider;
-        private const int RefreshIntervalInMilliSeconds = 30000;
-        
+
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
@@ -22,7 +21,7 @@ namespace LightHouse.ConsoleApp
 
             Parser
                 .Default
-                .ParseArguments<VstsOptions>(args)
+                .ParseArguments<DevOpsOptions>(args)
                 .WithParsed(async options =>
                 {
                     _serviceProvider = Bootstrapper.InitServiceProvider(options);
@@ -30,35 +29,32 @@ namespace LightHouse.ConsoleApp
                     _buildsWatcher = _serviceProvider.GetService<IWatchBuilds>();
                     _buildStatusLightController = _serviceProvider.GetService<IControlBuildStatusLight>();
 
-                    LogInitialInfo(options);
+                    if (_buildStatusLightController?.IsConnected == true)
+                        await Start(options);
 
-                    await Start();
+                    _logger.Information("Press any key to exit");
                 });
 
             while (!Console.KeyAvailable) ;
         }
 
-        private static void LogInitialInfo(VstsOptions options)
+        private static async Task Start(DevOpsOptions options)
         {
             _logger.Information("Starting LightHouse with the following properties:");
             _logger.Information($"Service: {options.Service}");
             _logger.Information($"Instance: {options.Instance}");
             _logger.Information($"Collection: {options.Collection}");
-            _logger.Information($"Team Projects: {options.TeamProjects}");
+            _logger.Information($"Team Projects: {string.Join(", ", options.TeamProjects)}");
             _logger.Information($"Personal Token: {options.PersonalToken}");
+            _logger.Information($"Refresh interval: {options.RefreshInterval}");
             _logger.Information("Starting to watch build status...");
-            _logger.Information("Press any key to exit");
-        }
 
-        private static async Task Start()
-        {
-            if (_buildStatusLightController?.IsConnected == true)
-                await _buildsWatcher.Watch(ProcessBuildsStatus, RefreshIntervalInMilliSeconds);
+            await _buildsWatcher.Watch(ProcessBuildsStatus);
         }
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            _logger?.Information("An unhandled exception occured with the following message.");
+            _logger?.Information("An unhandled exception occured.");
         }
 
         private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus)

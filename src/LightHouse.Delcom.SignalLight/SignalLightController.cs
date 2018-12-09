@@ -26,7 +26,7 @@ namespace LightHouse.Delcom.SignalLight
         private const int BuzzCommand = 70;
 
         public bool IsConnected { get; }
-        
+
         public SignalLightController(ILogger logger)
         {
             _logger = logger;
@@ -57,7 +57,7 @@ namespace LightHouse.Delcom.SignalLight
         public void TurnOnColor(SignalLightColor color, bool flash = false)
         {
             TurnOffColor();
-            
+
             switch (color)
             {
                 case SignalLightColor.Green:
@@ -67,8 +67,8 @@ namespace LightHouse.Delcom.SignalLight
                     break;
                 case SignalLightColor.Red:
                     WriteToDevice(new byte[] { EightBytesFlag, SolidCommand, Red });
-                    if(flash)
-                        WriteToDevice(new byte[] {EightBytesFlag, FlashCommand, 0, 2});
+                    if (flash)
+                        WriteToDevice(new byte[] { EightBytesFlag, FlashCommand, 0, 2 });
                     break;
                 case SignalLightColor.Orange:
                     WriteToDevice(new byte[] { EightBytesFlag, SolidCommand, Orange });
@@ -114,14 +114,22 @@ namespace LightHouse.Delcom.SignalLight
 
         private void WriteToDevice(byte[] values)
         {
-            if (values[0] == EightBytesFlag)
+            if (!IsConnected)
             {
-                _stream.SetFeature(values.PadRight());
+                _logger.Information("Can not write bytes because device is not connected");
             }
-            else if(values[0] == SixteenBytesFlag)
+            else
             {
-                _stream.SetFeature(values.PadRight(16));
+                if (values[0] == EightBytesFlag)
+                {
+                    _stream.SetFeature(values.PadRight());
+                }
+                else if (values[0] == SixteenBytesFlag)
+                {
+                    _stream.SetFeature(values.PadRight(16));
+                }
             }
+
         }
     }
 }

@@ -14,7 +14,6 @@
         public void SetSignalLight(LastBuildsStatus buildsStatus)
         {
             var isBuildInProgress = buildsStatus.AggregatedBuildStatus.Equals(AggregatedBuildStatus.InProgress);
-            _signalLightController.TurnOffAll();
 
             if (buildsStatus.AggregatedBuildStatus.Equals(AggregatedBuildStatus.None))
             {
@@ -22,6 +21,8 @@
             }
             else
             {
+                _signalLightController.TurnOffAll();
+
                 switch (buildsStatus.AggregatedBuildResult)
                 {
                     case AggregatedBuildResult.Failed:

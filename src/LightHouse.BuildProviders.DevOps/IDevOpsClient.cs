@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace LightHouse.BuildProviders.Vsts
+namespace LightHouse.BuildProviders.DevOps
 {
-    public interface IVstsClient
+    public interface IDevOpsClient
     {
         Task<List<BuildDefinitionsResponse>> GetCompletedBuildsAsync();
     }

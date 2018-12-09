@@ -1,4 +1,4 @@
-﻿namespace LightHouse.BuildProviders.Vsts
+﻿namespace LightHouse.BuildProviders.DevOps
 {
     public enum BuildResult
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LightHouse.BuildProviders.Vsts;
+using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ namespace LightHouse.ConsoleApp
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServiceProvider(VstsOptions options)
+        public static ServiceProvider InitServiceProvider(DevOpsOptions options)
         {
             var serviceCollection = new ServiceCollection();
 
@@ -23,14 +23,15 @@ namespace LightHouse.ConsoleApp
                     .CreateLogger());
             serviceCollection.AddAutoMapper();
             serviceCollection.AddTransient<IProvideBuilds, BuildProvider>();
-            serviceCollection.AddTransient<IVstsClient, VstsClient>(provider =>
-                new VstsClient(
+            serviceCollection.AddTransient<IDevOpsClient, DevOpsClient>(provider =>
+                new DevOpsClient(
                     provider.GetService<ILogger>(), 
                     options.PersonalToken, 
                     options.Instance, 
                     options.Collection, 
                     options.TeamProjects));
             serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
+            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer(options.RefreshInterval));
             serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();

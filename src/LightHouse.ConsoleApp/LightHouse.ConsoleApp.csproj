@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LightHouse.BuildProviders.Vsts\LightHouse.BuildProviders.Vsts.csproj" />
+    <ProjectReference Include="..\LightHouse.BuildProviders.DevOps\LightHouse.BuildProviders.DevOps.csproj" />
     <ProjectReference Include="..\LightHouse.Delcom.SignalLight\LightHouse.Delcom.SignalLight.csproj" />
     <ProjectReference Include="..\LightHouse.Lib\LightHouse.Lib.csproj" />
   </ItemGroup>

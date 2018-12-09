@@ -1,33 +1,28 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace LightHouse.Lib
 {
     public class BuildsWatcher : IWatchBuilds
     {
         private readonly IProvideLastBuildsStatus _buildsStatusProvider;
+        private readonly ITimeBuildStatusRefresh _buildStatusRefreshTimer;
 
-        public BuildsWatcher(IProvideLastBuildsStatus buildsStatusProvider)
+        public BuildsWatcher(IProvideLastBuildsStatus buildsStatusProvider, ITimeBuildStatusRefresh buildStatusRefreshTimer)
         {
             _buildsStatusProvider = buildsStatusProvider;
+            _buildStatusRefreshTimer = buildStatusRefreshTimer;
         }
 
-        public async Task Watch(Action<LastBuildsStatus> onRefreshAction, int intervalInMilliSeconds)
+        public async Task Watch(Action<LastBuildsStatus> onRefreshAction)
         {
-            //first call
-            await DetermineBuildStatus(onRefreshAction);
+            _buildStatusRefreshTimer.OnElapsed(async () =>
+            {
+                var buildsStatus = await _buildsStatusProvider.DetermineBuildStatus();
+                onRefreshAction(buildsStatus);
+            });
 
-            //start timer for subsequent calls
-            var timer = new Timer(intervalInMilliSeconds);
-            timer.Elapsed += async (sender, args) => { await DetermineBuildStatus(onRefreshAction); };
-            timer.Enabled = true;
-        }
-
-        private async Task DetermineBuildStatus(Action<LastBuildsStatus> onRefreshAction)
-        {
-            var buildsStatus = await _buildsStatusProvider.DetermineBuildStatus();
-            onRefreshAction(buildsStatus);
+            await _buildStatusRefreshTimer.Start();
         }
     }
 }

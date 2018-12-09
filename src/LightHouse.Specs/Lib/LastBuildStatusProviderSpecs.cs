@@ -5,7 +5,7 @@ using Moq;
 using Xunit;
 using Build = LightHouse.Lib.Build;
 
-namespace LightHouse.NewSpecs.Lib
+namespace LightHouseSpecs.Lib
 {
     public class LastBuildStatusProviderSpecs
     {

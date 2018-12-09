@@ -5,6 +5,6 @@ namespace LightHouse.Lib
 {
     public interface IWatchBuilds
     {
-        Task Watch(Action<LastBuildsStatus> onRefreshAction, int intervalInMilliSeconds);
+        Task Watch(Action<LastBuildsStatus> onRefreshAction);
     }
 }

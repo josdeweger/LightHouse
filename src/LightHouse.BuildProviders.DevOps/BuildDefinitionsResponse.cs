@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace LightHouse.BuildProviders.Vsts
+namespace LightHouse.BuildProviders.DevOps
 {
     public class BuildDefinitionsResponse
     {

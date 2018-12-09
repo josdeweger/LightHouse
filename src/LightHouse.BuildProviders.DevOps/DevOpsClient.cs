@@ -3,23 +3,23 @@ using System.Threading.Tasks;
 using Flurl.Http;
 using Serilog;
 
-namespace LightHouse.BuildProviders.Vsts
+namespace LightHouse.BuildProviders.DevOps
 {
-    public class VstsClient : IVstsClient
+    public class DevOpsClient : IDevOpsClient
     {
-        private readonly List<string> _vstsUrls;
+        private readonly List<string> _urls;
         private readonly ILogger _logger;
         private readonly string _accessToken;
 
-        public VstsClient(ILogger logger, string accessToken, string instance, string collection, IEnumerable<string> teamProjects)
+        public DevOpsClient(ILogger logger, string accessToken, string instance, string collection, IEnumerable<string> teamProjects)
         {
             _logger = logger;
             _accessToken = accessToken;
-            _vstsUrls = new List<string>();
+            _urls = new List<string>();
 
             foreach (var teamProject in teamProjects)
             {
-                _vstsUrls.Add($"https://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
+                _urls.Add($"https://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
             }
         }
 
@@ -29,7 +29,7 @@ namespace LightHouse.BuildProviders.Vsts
             {
                 var responses = new List<BuildDefinitionsResponse>();
 
-                foreach (var vstsUrl in _vstsUrls)
+                foreach (var vstsUrl in _urls)
                 {
                     var request = vstsUrl
                         .WithBasicAuth(_accessToken, string.Empty)

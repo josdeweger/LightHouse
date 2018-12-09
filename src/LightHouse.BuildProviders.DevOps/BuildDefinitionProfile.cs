@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace LightHouse.BuildProviders.Vsts
+namespace LightHouse.BuildProviders.DevOps
 {
     public class BuildDefinitionProfile : Profile
     {
