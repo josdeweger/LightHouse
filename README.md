@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/gxvow4bygb6rb70e?svg=true)](https://ci.appveyor.com/project/josdeweger/lighthouse)
+
 <img src=https://www.delcomproducts.com/images/BeaconSRed.jpg width="300">
 
 # LightHouse - a Build Status Light
