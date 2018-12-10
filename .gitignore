@@ -271,3 +271,5 @@ LightHouse\.v3\.ncrunch*
 src/LightHouse.UwpApp
 src/**/App\.config
 src/LightHouse\.ConsoleApp/run\.sh
+
+src/LightHouse\.ConsoleApp/run\.bat
