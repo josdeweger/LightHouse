@@ -35,7 +35,7 @@ namespace LightHouse.ConsoleApp
                     _logger.Information("Press any key to exit");
                 });
 
-            while (!Console.KeyAvailable) ;
+            Console.ReadKey();
         }
 
         private static async Task Start(DevOpsOptions options)
