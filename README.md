@@ -2,8 +2,10 @@
 
 <img src=https://www.delcomproducts.com/images/BeaconSRed.jpg width="300">
 
+[I wrote a blog post about this!](https://www.josdeweger.nl/article/lighthouse/)
+
 # LightHouse - a Build Status Light
-Cross platform build status light that reads build results from the build service, and aggregates the results into a single result to set the signal light. Currently supports Azure DevOps (formerly known as VSTS) and the [Delcom Signal Light](https://www.delcomproducts.com/productdetails.asp?PartNumber=904007-B) (USB Light), but can be extended with other build services and Signal Lights.
+Cross platform build status light that reads build results from the build service, and aggregates the results into a single result to set the signal light. Currently supports Microsoft DevOps (formerly known as VSTS) and the [Delcom Signal Light](https://www.delcomproducts.com/productdetails.asp?PartNumber=904007-B) (USB Light), but can be extended with other build services and Signal Lights.
 Tested on Windows 10 and Raspberry Pi 3 running Ubuntu Core 16
 
 # Getting started
