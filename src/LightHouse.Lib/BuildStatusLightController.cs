@@ -27,8 +27,6 @@
                 {
                     case AggregatedBuildResult.Failed:
                         _signalLightController.TurnOnColor(SignalLightColor.Red, isBuildInProgress);
-                        if (!isBuildInProgress)
-                            _signalLightController.TurnOnBuzzer(4, 1, 0, 2);
                         break;
                     case AggregatedBuildResult.PartiallySucceeded:
                         _signalLightController.TurnOnColor(SignalLightColor.Orange, isBuildInProgress);
