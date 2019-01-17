@@ -20,7 +20,7 @@ var destinationDirectory = Argument("destinationDirectory", @"");
 var username = Argument("username", "");
 var password = Argument("password", "");
 var sessionname = Argument("sessionname", "");
-var executableName = Argument("executableName", "LightHouse.ConsoleApp");
+var executableName = Argument("executableName", "LightHouse");
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION

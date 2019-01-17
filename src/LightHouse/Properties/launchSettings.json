@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "LightHouse.ConsoleApp": {
+    "LightHouse": {
       "commandName": "Project"
     }
   }

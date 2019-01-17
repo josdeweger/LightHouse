@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <TargetName>lighthouse</TargetName>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 

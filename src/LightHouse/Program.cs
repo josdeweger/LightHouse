@@ -5,7 +5,7 @@ using LightHouse.Lib;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace LightHouse.ConsoleApp
+namespace LightHouse
 {
     class Program
     {

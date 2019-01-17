@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>lighthouse</id>
+    <title>Lightouse</title>
+    <version>1.0.0</version>
+    <owners>Jos de Weger</owners>
+    <authors>Jos de Weger</authors>
+    <summary>
+		Cross platform build status light that reads build results from a build service (MS DevOps).
+    </summary>
+    <description>
+Cross platform build status light that reads build results from the build service, 
+and aggregates the results into a single result to set the signal light. Currently 
+supports Microsoft DevOps (formerly known as VSTS) and the Delcom Signal Light (USB Light), 
+but can be extended with other build services and Signal Lights. Tested on Windows 10 and 
+Raspberry Pi 3 running Ubuntu Core 16.
+
+Getting started: 
+Lighthouse.Console.exe --s 'build service' --i 'instance' --c 'collection' --p 'team projects comma seperated' --t 'token'
+		
+--s The service, currently only options is 'devops'
+--i Instance, e.g. 'dev.azure.com'
+--c Collection, your team collection
+--p Team Projects, comma seperated
+--t Token, needed for authentication
+    </description>
+    <language>en-US</language>
+    <licenseUrl>https://github.com/josdeweger/LightHouse/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/josdeweger/LightHouse</projectUrl>
+    <bugTrackerUrl>https://github.com/josdeweger/LightHouse/issues</bugTrackerUrl>
+    <packageSourceUrl>https://github.com/josdeweger/LightHouse</packageSourceUrl>
+    <projectSourceUrl>https://github.com/josdeweger/LightHouse</projectSourceUrl>
+    <tags>status-light vsts devops lighthouse signal-light build-status delcom azure-devops ci continuous-integration</tags>
+    <copyright>Copyright Jos de Weger 2019</copyright>
+    <releaseNotes>
+First version, please add your own build services by creating a PR on github (https://github.com/josdeweger/LightHouse)
+    </releaseNotes>
+  </metadata>
+  <files>
+    <file src="artifacts\**" target="tools" />
+  </files>
+</package>

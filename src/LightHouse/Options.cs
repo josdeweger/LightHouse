@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CommandLine;
 
-namespace LightHouse.ConsoleApp
+namespace LightHouse
 {
     public class Options
     {
