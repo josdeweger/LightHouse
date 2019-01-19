@@ -272,4 +272,4 @@ src/LightHouse.UwpApp
 src/**/App\.config
 src/LightHouse/run\.sh
 
-src/LightHouse\.ConsoleApp/run\.bat
+src/LightHouse/run\.bat
