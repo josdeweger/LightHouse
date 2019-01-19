@@ -26,7 +26,10 @@ namespace LightHouse
         [Option('t', "token", Required = true, HelpText = "Personal token used to authenticate.")]
         public string PersonalToken { get; set; }
         
-        [Option('r', "refresh-interval", Required = false, HelpText = "Refresh interval in seconds. Defaults to 30 seconds", Default = 30)]
-        public double RefreshInterval { get; set; }
+        [Option('r', "refresh-interval", Required = false, HelpText = "Refresh interval in seconds. Defaults to 30 seconds, value starting from 5", Default = 30)]
+        public int RefreshInterval { get; set; }
+
+        [Option('b', "brightness", Required = false, HelpText = "Set the brightness of the LED's, value between 1 and 100", Default = 5)]
+        public int Brightness { get; set; }
     }
 }

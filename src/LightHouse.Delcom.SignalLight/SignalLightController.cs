@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using HidSharp;
 using LightHouse.Lib;
 using Serilog;
@@ -10,12 +11,12 @@ namespace LightHouse.Delcom.SignalLight
         private readonly ILogger _logger;
         private const int VendorId = 0x0fc5;
         private const int ProductId = 0xb080;
-        private readonly HidStream _stream;
+        private HidStream _stream;
 
-        private const int Green = 0xFE;
-        private const int Red = 0xFD;
-        private const int Orange = 0xFB;
-        private const int Off = 0xFF;
+        private const int Green = 254;
+        private const int Red = 253;
+        private const int Orange = 251;
+        private const int Off = 255;
         private const int BuzzerOn = 1;
         private const int BuzzerOff = 0;
 
@@ -25,27 +26,49 @@ namespace LightHouse.Delcom.SignalLight
         private const int FlashCommand = 20;
         private const int BuzzCommand = 70;
 
-        public bool IsConnected { get; }
+        public bool IsConnected { get; set; }
 
         public SignalLightController(ILogger logger)
         {
             _logger = logger;
 
             _logger.Information($"Getting HID device with vendor id: {VendorId} and product id: {ProductId}");
+
+            DeviceList.Local.Changed += ConnectedDevicesChanged;
+            
+            Connect();
+        }
+
+        private void ConnectedDevicesChanged(object sender, DeviceListChangedEventArgs e)
+        {
+            Connect();
+        }
+
+        private void Connect()
+        {
+            if (DeviceList.Local.TryGetHidDevice(out var signalLight, VendorId, ProductId))
+            {
+                OpenStream(signalLight);
+            }
+            else
+            {
+                IsConnected = false;
+                _logger.Information("Signal Light device unplugged!");
+            }
+        }
+
+        private void OpenStream(HidDevice signalLight)
+        {
             try
             {
-                if (DeviceList.Local.TryGetHidDevice(out var signalLight, VendorId, ProductId))
-                {
-                    _logger.Information("Signal Light device found!");
-                    _logger.Information("Opening device");
-                    _stream = signalLight.Open();
-                    IsConnected = true;
-                }
-                else
-                {
-                    IsConnected = false;
-                    _logger.Fatal("Signal Light device not found!");
-                }
+                _logger.Information("Signal Light device found!");
+                _logger.Information("Opening device");
+
+                _stream = signalLight.Open();
+
+                _logger.Information("Stream open");
+
+                IsConnected = true;
             }
             catch (Exception e)
             {
@@ -54,7 +77,7 @@ namespace LightHouse.Delcom.SignalLight
             }
         }
 
-        public void TurnOnColor(SignalLightColor color, bool flash = false)
+        public void TurnOnColor(SignalLightColor color, byte brightness = 5, bool flash = false)
         {
             TurnOffColor();
 
@@ -78,6 +101,8 @@ namespace LightHouse.Delcom.SignalLight
                 default:
                     throw new ArgumentOutOfRangeException(nameof(color), color, null);
             }
+
+            SetBrightness(brightness);
         }
 
         public void TurnOnBuzzer(byte frequency, byte repeatCount, byte onTime, byte offTime)
@@ -103,6 +128,36 @@ namespace LightHouse.Delcom.SignalLight
             TurnOffBuzzer();
         }
 
+        public void SetBrightness(byte brightness)
+        {
+            if (brightness < 1) brightness = 1;
+            if (brightness > 100) brightness = 100;
+
+            WriteToDevice(new byte[] { EightBytesFlag, 34, 0, brightness });
+        }
+
+        public void Test()
+        {
+            TurnOnColor(SignalLightColor.Red, 80);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Orange, 80);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Green, 80);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Red, 50);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Orange, 50);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Green, 50);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Red, 20);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Orange, 20);
+            Thread.Sleep(400);
+            TurnOnColor(SignalLightColor.Green, 20);
+            Thread.Sleep(400);
+        }
+
         public void Dispose()
         {
             _logger.Information("Turning off Signal Light lights and buzzer");
@@ -120,16 +175,22 @@ namespace LightHouse.Delcom.SignalLight
             }
             else
             {
-                if (values[0] == EightBytesFlag)
+                try
                 {
-                    _stream.SetFeature(values.PadRight());
+                    if (values[0] == EightBytesFlag)
+                    {
+                        _stream?.SetFeature(values.PadRight());
+                    }
+                    else if (values[0] == SixteenBytesFlag)
+                    {
+                        _stream?.SetFeature(values.PadRight(16));
+                    }
                 }
-                else if (values[0] == SixteenBytesFlag)
+                catch (Exception)
                 {
-                    _stream.SetFeature(values.PadRight(16));
+                    _logger.Fatal("Could not write bytes to Signal Light stream!");
                 }
             }
-
         }
     }
 }

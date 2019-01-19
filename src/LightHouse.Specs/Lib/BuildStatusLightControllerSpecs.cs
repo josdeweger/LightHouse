@@ -39,7 +39,7 @@ namespace LightHouseSpecs.Lib
             controller.SetSignalLight(lastBuildStatusses);
 
             signalLightControllerMock.Verify(x => x.TurnOffAll(), Times.Once);
-            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Red, false), Times.Once);
+            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Red, It.IsAny<byte>(), false), Times.Once);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace LightHouseSpecs.Lib
             controller.SetSignalLight(lastBuildStatusses);
 
             signalLightControllerMock.Verify(x => x.TurnOffAll(), Times.Once);
-            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Red, true), Times.Once);
+            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Red, It.IsAny<byte>(), true), Times.Once);
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace LightHouseSpecs.Lib
             controller.SetSignalLight(lastBuildStatusses);
 
             signalLightControllerMock.Verify(x => x.TurnOffAll(), Times.Once);
-            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Green, false), Times.Once);
+            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Green, It.IsAny<byte>(), false), Times.Once);
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace LightHouseSpecs.Lib
             controller.SetSignalLight(lastBuildStatusses);
 
             signalLightControllerMock.Verify(x => x.TurnOffAll(), Times.Once);
-            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Green, true), Times.Once);
+            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Green, It.IsAny<byte>(), true), Times.Once);
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace LightHouseSpecs.Lib
             controller.SetSignalLight(lastBuildStatusses);
 
             signalLightControllerMock.Verify(x => x.TurnOffAll(), Times.Once);
-            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Orange, false), Times.Once);
+            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Orange, It.IsAny<byte>(), false), Times.Once);
         }
 
         [Fact]
@@ -134,7 +134,7 @@ namespace LightHouseSpecs.Lib
             controller.SetSignalLight(lastBuildStatusses);
 
             signalLightControllerMock.Verify(x => x.TurnOffAll(), Times.Once);
-            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Orange, true), Times.Once);
+            signalLightControllerMock.Verify(x => x.TurnOnColor(SignalLightColor.Orange, It.IsAny<byte>(), true), Times.Once);
         }
     }
 }

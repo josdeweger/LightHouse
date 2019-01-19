@@ -11,7 +11,7 @@
             _signalLightController = signalLightController;
         }
 
-        public void SetSignalLight(LastBuildsStatus buildsStatus)
+        public void SetSignalLight(LastBuildsStatus buildsStatus, byte brightness = 5)
         {
             var isBuildInProgress = buildsStatus.AggregatedBuildStatus.Equals(AggregatedBuildStatus.InProgress);
 
@@ -26,13 +26,13 @@
                 switch (buildsStatus.AggregatedBuildResult)
                 {
                     case AggregatedBuildResult.Failed:
-                        _signalLightController.TurnOnColor(SignalLightColor.Red, isBuildInProgress);
+                        _signalLightController.TurnOnColor(SignalLightColor.Red, brightness, isBuildInProgress);
                         break;
                     case AggregatedBuildResult.PartiallySucceeded:
-                        _signalLightController.TurnOnColor(SignalLightColor.Orange, isBuildInProgress);
+                        _signalLightController.TurnOnColor(SignalLightColor.Orange, brightness, isBuildInProgress);
                         break;
                     case AggregatedBuildResult.Succeeded:
-                        _signalLightController.TurnOnColor(SignalLightColor.Green, isBuildInProgress);
+                        _signalLightController.TurnOnColor(SignalLightColor.Green, brightness, isBuildInProgress);
                         break;
                 }
             }

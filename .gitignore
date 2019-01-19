@@ -259,10 +259,10 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-LightHouse\.ConsoleApp/run\.bat
+LightHouse/run\.bat
 
 # Cake
-LightHouse\.ConsoleApp/tools/*
+LightHouse/tools/*
 
 # NCrunch
 LightHouse\.v3\.ncrunch*
@@ -270,6 +270,6 @@ LightHouse\.v3\.ncrunch*
 # LightHouse specific
 src/LightHouse.UwpApp
 src/**/App\.config
-src/LightHouse\.ConsoleApp/run\.sh
+src/LightHouse/run\.sh
 
 src/LightHouse\.ConsoleApp/run\.bat

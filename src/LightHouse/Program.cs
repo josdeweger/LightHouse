@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using LightHouse.Lib;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace LightHouse
@@ -11,6 +13,7 @@ namespace LightHouse
     {
         private static IWatchBuilds _buildsWatcher;
         private static IControlBuildStatusLight _buildStatusLightController;
+        private static IControlSignalLight _signalLightController;
         private static ILogger _logger;
         private static ServiceProvider _serviceProvider;
 
@@ -27,6 +30,7 @@ namespace LightHouse
                     _serviceProvider = Bootstrapper.InitServiceProvider(options);
                     _logger = _serviceProvider.GetService<ILogger>();
                     _buildsWatcher = _serviceProvider.GetService<IWatchBuilds>();
+                    _signalLightController = _serviceProvider.GetService<IControlSignalLight>();
                     _buildStatusLightController = _serviceProvider.GetService<IControlBuildStatusLight>();
 
                     if (_buildStatusLightController?.IsConnected == true)
@@ -45,25 +49,31 @@ namespace LightHouse
             _logger.Information($"Instance: {options.Instance}");
             _logger.Information($"Collection: {options.Collection}");
             _logger.Information($"Team Projects: {string.Join(", ", options.TeamProjects)}");
-            _logger.Information($"Personal Token: {options.PersonalToken}");
             _logger.Information($"Refresh interval: {options.RefreshInterval}");
+            _logger.Information($"Brightness: {options.Brightness}");
+
+            _logger.Information("Start sequence...");
+
+            _signalLightController.Test();
+                
             _logger.Information("Starting to watch build status...");
 
-            await _buildsWatcher.Watch(ProcessBuildsStatus);
+            await _buildsWatcher.Watch(lastBuildStatus =>
+                ProcessBuildsStatus(lastBuildStatus, Convert.ToByte(options.Brightness)));
+        }
+
+        private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus, byte brightness)
+        {
+            _buildStatusLightController?.SetSignalLight(buildsStatus, brightness);
+
+            _logger?.Information(
+                $"Build status: {buildsStatus.AggregatedBuildStatus.ToString()} | " +
+                $"Build result: {buildsStatus.AggregatedBuildResult.ToString()}");
         }
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             _logger?.Information("An unhandled exception occured.");
-        }
-
-        private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus)
-        {
-            _buildStatusLightController?.SetSignalLight(buildsStatus);
-
-            _logger?.Information(
-                $"Build status: {buildsStatus.AggregatedBuildStatus.ToString()} | " +
-                $"Build result: {buildsStatus.AggregatedBuildResult.ToString()}");
         }
 
         static void OnProcessExit(object sender, EventArgs e)
