@@ -20,6 +20,8 @@ dotnet run --s "<service>" --i "<instance>" --c "<collection>" --p "<team projec
 `--c  Collection, your team collection`  
 `--p  Team Projects, comma seperated`  
 `--t  Token, needed for authentication`
+`--r  Refresh Interval, interval in seconds (Optional, defaults to 60)`
+`--b  Brightness, sets LED brightness, min = 1, max = 100 (Optional, defaults to 5)`
 
 # What do the lights mean?
 | Color | Meaning |
