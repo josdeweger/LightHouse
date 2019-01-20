@@ -136,25 +136,25 @@ namespace LightHouse.Delcom.SignalLight
             WriteToDevice(new byte[] { EightBytesFlag, 34, 0, brightness });
         }
 
-        public void Test()
+        public void Test(byte brightness)
         {
-            TurnOnColor(SignalLightColor.Red, 80);
+            TurnOnColor(SignalLightColor.Red, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Orange, 80);
+            TurnOnColor(SignalLightColor.Orange, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Green, 80);
+            TurnOnColor(SignalLightColor.Green, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Red, 50);
+            TurnOnColor(SignalLightColor.Red, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Orange, 50);
+            TurnOnColor(SignalLightColor.Orange, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Green, 50);
+            TurnOnColor(SignalLightColor.Green, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Red, 20);
+            TurnOnColor(SignalLightColor.Red, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Orange, 20);
+            TurnOnColor(SignalLightColor.Orange, brightness);
             Thread.Sleep(400);
-            TurnOnColor(SignalLightColor.Green, 20);
+            TurnOnColor(SignalLightColor.Green, brightness);
             Thread.Sleep(400);
         }
 

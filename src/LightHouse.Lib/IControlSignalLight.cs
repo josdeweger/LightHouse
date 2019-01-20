@@ -9,6 +9,6 @@
         void TurnOffColor();
         void TurnOffAll();
         void SetBrightness(byte brightness);
-        void Test();
+        void Test(byte brightness = 5);
     }
 }
