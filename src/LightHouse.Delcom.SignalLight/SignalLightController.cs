@@ -156,6 +156,8 @@ namespace LightHouse.Delcom.SignalLight
             Thread.Sleep(400);
             TurnOnColor(SignalLightColor.Green, brightness);
             Thread.Sleep(400);
+
+            TurnOffAll();
         }
 
         public void Dispose()
