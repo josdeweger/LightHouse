@@ -8,23 +8,25 @@ using Serilog;
 
 namespace LightHouse.BuildProviders.DevOps
 {
-    public class DevOpsClient : IProvideBuilds
+    public class TfsClient : IProvideBuilds
     {
         private readonly List<string> _urls;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly string _userName;
         private readonly string _accessToken;
 
-        public DevOpsClient(ILogger logger, IMapper mapper, string accessToken, string instance, string collection, IEnumerable<string> teamProjects)
+        public TfsClient(ILogger logger, IMapper mapper, string userName, string accessToken, string instance, string collection, IEnumerable<string> teamProjects)
         {
             _logger = logger;
             _mapper = mapper;
+            _userName = userName;
             _accessToken = accessToken;
             _urls = new List<string>();
 
             foreach (var teamProject in teamProjects)
             {
-                _urls.Add($"https://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
+                _urls.Add($"http://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
             }
         }
 
@@ -34,10 +36,10 @@ namespace LightHouse.BuildProviders.DevOps
             {
                 var responses = new List<BuildDefinitionsResponse>();
 
-                foreach (var vstsUrl in _urls)
+                foreach (var tfsUrl in _urls)
                 {
-                    var request = vstsUrl
-                        .WithBasicAuth(_accessToken, string.Empty)
+                    var request = tfsUrl
+                        .WithBasicAuth(_userName, _accessToken)
                         .AppendPathSegment("build")
                         .AppendPathSegment("Definitions")
                         .SetQueryParam("includeLatestBuilds", true);

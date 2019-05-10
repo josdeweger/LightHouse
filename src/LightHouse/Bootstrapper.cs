@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using AutoMapper;
 using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
@@ -11,7 +14,7 @@ namespace LightHouse
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServiceProvider(DevOpsOptions options)
+        public static ServiceProvider InitServices(Options options)
         {
             var serviceCollection = new ServiceCollection();
 
@@ -21,15 +24,36 @@ namespace LightHouse
                     .Debug()
                     .WriteTo.Console()
                     .CreateLogger());
-            serviceCollection.AddAutoMapper();
-            serviceCollection.AddTransient<IProvideBuilds, BuildProvider>();
-            serviceCollection.AddTransient<IDevOpsClient, DevOpsClient>(provider =>
-                new DevOpsClient(
-                    provider.GetService<ILogger>(), 
-                    options.PersonalToken, 
-                    options.Instance, 
-                    options.Collection, 
-                    options.TeamProjects));
+
+            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
+
+            switch (options.Service)
+            {
+                case BuildService.DevOps:
+                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
+                        new DevOpsClient(
+                            provider.GetService<ILogger>(),
+                            provider.GetService<IMapper>(),
+                            options.Token,
+                            options.Instance,
+                            options.Collection,
+                            options.TeamProjects));
+                    break;
+                case BuildService.Tfs:
+                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
+                        new TfsClient(
+                            provider.GetService<ILogger>(),
+                            provider.GetService<IMapper>(),
+                            options.Username,
+                            options.Token,
+                            options.Instance,
+                            options.Collection,
+                            options.TeamProjects));
+                    break;
+                default:
+                    throw new Exception($"Unknown build service {options.Service}");
+            }
+            
             serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
             serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer(options.RefreshInterval));
             serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
@@ -39,6 +63,16 @@ namespace LightHouse
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
             return ServiceProvider;
+        }
+
+        private static Assembly[] GetAssembliesStartingWith(string assemblyNameStart)
+        {
+            return Assembly
+                .GetExecutingAssembly()
+                .GetReferencedAssemblies()
+                .Where(a => a.Name.StartsWith(assemblyNameStart, StringComparison.OrdinalIgnoreCase))
+                .Select(Assembly.Load)
+                .ToArray();
         }
     }
 }

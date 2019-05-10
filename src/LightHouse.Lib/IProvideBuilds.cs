@@ -5,6 +5,6 @@ namespace LightHouse.Lib
 {
     public interface IProvideBuilds
     {
-        Task<IEnumerable<Build>> GetAllAsync();
+        Task<List<Build>> GetAllBuilds();
     }
 }

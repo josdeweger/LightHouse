@@ -19,7 +19,7 @@ namespace LightHouse.Lib
         {
             var lastBuildStatus = new LastBuildsStatus();
 
-            var builds = await _buildsProvider.GetAllAsync();
+            var builds = await _buildsProvider.GetAllBuilds();
 
             if (!builds.Any())
                 return new LastBuildsStatus{AggregatedBuildStatus = AggregatedBuildStatus.None};

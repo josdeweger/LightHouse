@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -21,13 +23,15 @@ namespace LightHouse
         {
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
-
+            
             Parser
                 .Default
-                .ParseArguments<DevOpsOptions>(args)
+                .ParseArguments<Options>(args)
                 .WithParsed(async options =>
                 {
-                    _serviceProvider = Bootstrapper.InitServiceProvider(options);
+
+
+                    _serviceProvider = Bootstrapper.InitServices(options);
                     _logger = _serviceProvider.GetService<ILogger>();
                     _buildsWatcher = _serviceProvider.GetService<IWatchBuilds>();
                     _signalLightController = _serviceProvider.GetService<IControlSignalLight>();
@@ -42,13 +46,10 @@ namespace LightHouse
             Console.ReadKey();
         }
 
-        private static async Task Start(DevOpsOptions options)
+        private static async Task Start(Options options)
         {
             _logger.Information("Starting LightHouse with the following properties:");
             _logger.Information($"Service: {options.Service}");
-            _logger.Information($"Instance: {options.Instance}");
-            _logger.Information($"Collection: {options.Collection}");
-            _logger.Information($"Team Projects: {string.Join(", ", options.TeamProjects)}");
             _logger.Information($"Refresh interval: {options.RefreshInterval}");
             _logger.Information($"Brightness: {options.Brightness}");
 

@@ -16,7 +16,7 @@ namespace LightHouseSpecs.Lib
             var lastBuildOne = new Build { Result = BuildResult.Failed };
             var lastBuildTwo = new Build { Result = BuildResult.Succeeded };
 
-            buildsProviderMock.Setup(b => b.GetAllAsync()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
+            buildsProviderMock.Setup(b => b.GetAllBuilds()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
 
             var provider = new LastBuildsStatusProvider(buildsProviderMock.Object);
 
@@ -33,7 +33,7 @@ namespace LightHouseSpecs.Lib
             var lastBuildOne = new Build {Result = BuildResult.PartiallySucceeded};
             var lastBuildTwo = new Build {Result = BuildResult.Succeeded};
 
-            buildsProviderMock.Setup(b => b.GetAllAsync()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
+            buildsProviderMock.Setup(b => b.GetAllBuilds()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
 
             var provider = new LastBuildsStatusProvider(buildsProviderMock.Object);
 
@@ -50,7 +50,7 @@ namespace LightHouseSpecs.Lib
             var lastBuildOne = new Build { Result = BuildResult.Succeeded };
             var lastBuildTwo = new Build { Result = BuildResult.Succeeded };
 
-            buildsProviderMock.Setup(b => b.GetAllAsync()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
+            buildsProviderMock.Setup(b => b.GetAllBuilds()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
 
             var provider = new LastBuildsStatusProvider(buildsProviderMock.Object);
 
