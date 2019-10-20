@@ -88,7 +88,7 @@ Task("Create-Chocolatey-Package")
             Debug                   = true,
             Verbose                 = true,
             OutputDirectory         = Directory(artifactsFolderPath),
-            Version                 = EnvironmentVariable(APPVEYOR_BUILD_VERSION)
+            Version                 = EnvironmentVariable("APPVEYOR_BUILD_VERSION")
         };
 
         ChocolateyPack("./Lighthouse.nuspec", settings);
