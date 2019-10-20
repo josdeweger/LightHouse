@@ -16,15 +16,15 @@ namespace LightHouse
         public int Brightness { get; set; }
 
         [Option('i', "instance", Required = true,
-            HelpText = "DevOps instance (url contains following parts: https://{instance}[/{collection}[/{team-project}]).")]
+            HelpText = "DevOps instance (url contains following parts: http(s)://{instance}[/{collection}[/{team-project}]).")]
         public string Instance { get; set; }
 
         [Option('c', "collection", Required = true,
-            HelpText = "DevOps collection (url contains following parts: https://{instance}[/{collection}[/{team-project}]).")]
+            HelpText = "DevOps collection (url contains following parts: http(s)://{instance}[/{collection}[/{team-project}]).")]
         public string Collection { get; set; }
 
         [Option('p', "team-projects", Separator = ',', Required = false,
-            HelpText = "Team Projects, comma seperated (url contains following parts: https://{instance}[/{collection}[/{team-project}]).")]
+            HelpText = "Team Projects, comma seperated (url contains following parts: http(s)://{instance}[/{collection}[/{team-project}]).")]
         public IEnumerable<string> TeamProjects { get; set; }
 
         [Option('u', "username", Required = false, HelpText = "User name used to authenticate.")]

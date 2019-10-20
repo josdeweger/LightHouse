@@ -24,7 +24,8 @@ namespace LightHouse.BuildProviders.DevOps
 
             foreach (var teamProject in teamProjects)
             {
-                _urls.Add($"https://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
+                var protocol = instance.StartsWith("http") ? string.Empty : "https";
+                _urls.Add($"{protocol}://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
             }
         }
 

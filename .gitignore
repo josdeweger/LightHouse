@@ -262,7 +262,11 @@ __pycache__/
 LightHouse/run\.bat
 
 # Cake
-LightHouse/tools/*
+tools/*
+src/LightHouse/tools/*
+
+# vscode
+.vscode/*
 
 # NCrunch
 LightHouse\.v3\.ncrunch*
