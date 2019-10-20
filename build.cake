@@ -71,7 +71,7 @@ Task("Create-Executable")
     .Does(() => {
         var settings = new DotNetCorePublishSettings
         {
-            Framework = "netcoreapp2.1",
+            Framework = "netcoreapp2.2",
             Configuration = "Release",
             OutputDirectory = artifactsFolderPath,
             SelfContained = true,

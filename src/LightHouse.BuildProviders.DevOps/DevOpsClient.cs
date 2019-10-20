@@ -15,18 +15,19 @@ namespace LightHouse.BuildProviders.DevOps
         private readonly IMapper _mapper;
         private readonly string _accessToken;
 
-        public DevOpsClient(ILogger logger, IMapper mapper, string accessToken, string instance, string collection, IEnumerable<string> teamProjects)
+        public DevOpsClient(
+            ILogger logger, 
+            IMapper mapper, 
+            IUrlBuilder urlBuilder,
+            string accessToken, 
+            string instance, 
+            string collection, 
+            List<string> teamProjects)
         {
             _logger = logger;
             _mapper = mapper;
             _accessToken = accessToken;
-            _urls = new List<string>();
-
-            foreach (var teamProject in teamProjects)
-            {
-                var protocol = instance.StartsWith("http") ? string.Empty : "https";
-                _urls.Add($"{protocol}://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
-            }
+            _urls = urlBuilder.Build(instance, collection, teamProjects);
         }
 
         public async Task<List<Build>> GetAllBuilds()

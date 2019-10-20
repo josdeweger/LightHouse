@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using Flurl.Http;
 using LightHouse.Lib;
@@ -16,18 +17,21 @@ namespace LightHouse.BuildProviders.DevOps
         private readonly string _userName;
         private readonly string _accessToken;
 
-        public TfsClient(ILogger logger, IMapper mapper, string userName, string accessToken, string instance, string collection, IEnumerable<string> teamProjects)
+        public TfsClient(
+            ILogger logger, 
+            IMapper mapper, 
+            IUrlBuilder urlBuilder,
+            string userName, 
+            string accessToken, 
+            string instance, 
+            string collection, 
+            List<string> teamProjects)
         {
             _logger = logger;
             _mapper = mapper;
             _userName = userName;
             _accessToken = accessToken;
-            _urls = new List<string>();
-
-            foreach (var teamProject in teamProjects)
-            {
-                _urls.Add($"http://{instance.Trim()}/{collection.Trim()}/{teamProject.Trim()}/_apis/");
-            }
+            _urls = urlBuilder.Build(instance, collection, teamProjects);
         }
 
         public async Task<List<Build>> GetAllBuilds()

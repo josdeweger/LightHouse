@@ -30,8 +30,6 @@ namespace LightHouse
                 .ParseArguments<Options>(args)
                 .WithParsed(async options =>
                 {
-
-
                     _serviceProvider = Bootstrapper.InitServices(options);
                     _logger = _serviceProvider.GetService<ILogger>();
                     _buildsWatcher = _serviceProvider.GetService<IWatchBuilds>();

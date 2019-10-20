@@ -34,21 +34,23 @@ namespace LightHouse
                         new DevOpsClient(
                             provider.GetService<ILogger>(),
                             provider.GetService<IMapper>(),
+                            provider.GetService<IUrlBuilder>(),
                             options.Token,
                             options.Instance,
                             options.Collection,
-                            options.TeamProjects));
+                            options.TeamProjects.ToList()));
                     break;
                 case BuildService.Tfs:
                     serviceCollection.AddTransient<IProvideBuilds>(provider =>
                         new TfsClient(
                             provider.GetService<ILogger>(),
                             provider.GetService<IMapper>(),
+                            provider.GetService<IUrlBuilder>(),
                             options.Username,
                             options.Token,
                             options.Instance,
                             options.Collection,
-                            options.TeamProjects));
+                            options.TeamProjects.ToList()));
                     break;
                 default:
                     throw new Exception($"Unknown build service {options.Service}");
@@ -59,6 +61,7 @@ namespace LightHouse
             serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();
+            serviceCollection.AddSingleton<IUrlBuilder, DevOpsUrlBuilder>();
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
