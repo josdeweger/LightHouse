@@ -24,8 +24,9 @@ namespace LightHouse
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
             
-            Parser
-                .Default
+            var parser = new Parser(cfg => cfg.CaseInsensitiveEnumValues = true);
+            
+            parser
                 .ParseArguments<Options>(args)
                 .WithParsed(async options =>
                 {

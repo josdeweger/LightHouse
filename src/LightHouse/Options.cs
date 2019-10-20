@@ -6,7 +6,7 @@ namespace LightHouse
 {
     public class Options
     {
-        [Option('s', "service", Required = true, HelpText = "Type of service used. Only one option at the moment: 'devops'.")]
+        [Option('s', "service", Required = true, HelpText = "Type of service used. Options are: 'tfs', 'devops'.")]
         public BuildService Service { get; set; }
 
         [Option('r', "refresh-interval", Required = false, HelpText = "Refresh interval in seconds. Defaults to 30 seconds, value starting from 5", Default = 30)]
