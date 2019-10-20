@@ -29,7 +29,7 @@ Lighthouse.Console.exe --s 'build service' --i 'instance' --c 'collection' --p '
     <licenseUrl>https://github.com/josdeweger/LightHouse/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/josdeweger/LightHouse</projectUrl>
     <bugTrackerUrl>https://github.com/josdeweger/LightHouse/issues</bugTrackerUrl>
-    <packageSourceUrl>https://github.com/josdeweger/LightHouse</packageSourceUrl>
+    <packageSourceUrl>https://chocolatey.org/packages/lighthouse/</packageSourceUrl>
     <projectSourceUrl>https://github.com/josdeweger/LightHouse</projectSourceUrl>
     <tags>status-light vsts devops lighthouse signal-light build-status delcom azure-devops ci continuous-integration</tags>
     <copyright>Copyright Jos de Weger 2019</copyright>

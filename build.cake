@@ -11,6 +11,7 @@ var solution            = solutionFolderPath + "LightHouse.sln";
 var consoleAppPath      = solutionFolderPath + "LightHouse/";
 var artifactsFolderPath = "./artifacts/";
 var chocolateyApiKey    = EnvironmentVariable("CHOCOLATEY_API_KEY");
+var version             = "1.0.1";
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -88,7 +89,7 @@ Task("Create-Chocolatey-Package")
             Debug                   = true,
             Verbose                 = true,
             OutputDirectory         = Directory(artifactsFolderPath),
-            Version                 = "1.0.0." + EnvironmentVariable("APPVEYOR_BUILD_VERSION")
+            Version                 = version
         };
 
         ChocolateyPack("./Lighthouse.nuspec", settings);
