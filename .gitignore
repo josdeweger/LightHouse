@@ -277,3 +277,4 @@ src/**/App\.config
 src/LightHouse/run\.sh
 
 src/LightHouse/run\.bat
+src/LightHouse/nuget-pack-and-choco-push.bat

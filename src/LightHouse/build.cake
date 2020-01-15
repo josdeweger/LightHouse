@@ -2,7 +2,7 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
-var framework = Argument("framework", "netcoreapp2.1");
+var framework = Argument("framework", "netcoreapp2.2");
 
 ///////////////////////////////////////////////////////////////////////
 // ARGUMENTS (WITH DEFAULT PARAMETERS FOR WIN 10 IOT CORE)

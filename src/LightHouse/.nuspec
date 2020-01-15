@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>lighthouse</id>
+    <version>1.0.2</version>
+    <title>Lighthouse</title>
+    <authors>Jos de Weger</authors>
+    <projectUrl>https://github.com/josdeweger/lighthouse</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build status light for TFS and Azure DevOps (former VSTS)</description>
+    <tags>status-light vsts devops lighthouse signal-light build-status delcom azure-devops ci continuous-integration</tags>
+    <copyright>2020 Jos de Weger</copyright>
+  </metadata>
+  <files>
+    <file src="bin\Release\netcoreapp2.2\win10-x64\publish\**" />
+  </files>
+</package>
