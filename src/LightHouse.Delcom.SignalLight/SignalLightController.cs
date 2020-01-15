@@ -81,6 +81,8 @@ namespace LightHouse.Delcom.SignalLight
         {
             TurnOffColor();
 
+            SetBrightness(brightness);
+
             switch (color)
             {
                 case SignalLightColor.Green:
@@ -102,7 +104,7 @@ namespace LightHouse.Delcom.SignalLight
                     throw new ArgumentOutOfRangeException(nameof(color), color, null);
             }
 
-            SetBrightness(brightness);
+            TurnOffBuzzer();
         }
 
         public void TurnOnBuzzer(byte frequency, byte repeatCount, byte onTime, byte offTime)
@@ -134,6 +136,8 @@ namespace LightHouse.Delcom.SignalLight
             if (brightness > 100) brightness = 100;
 
             WriteToDevice(new byte[] { EightBytesFlag, 34, 0, brightness });
+            WriteToDevice(new byte[] { EightBytesFlag, 34, 1, brightness });
+            WriteToDevice(new byte[] { EightBytesFlag, 34, 2, brightness });
         }
 
         public void Test(byte brightness)
