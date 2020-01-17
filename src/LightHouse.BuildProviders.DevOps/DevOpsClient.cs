@@ -14,19 +14,21 @@ namespace LightHouse.BuildProviders.DevOps
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly string _accessToken;
+        private readonly List<long> _excludedBuildDefinitionIds;
 
-        public DevOpsClient(
-            ILogger logger, 
-            IMapper mapper, 
+        public DevOpsClient(ILogger logger,
+            IMapper mapper,
             IUrlBuilder urlBuilder,
-            string accessToken, 
-            string instance, 
-            string collection, 
-            List<string> teamProjects)
+            string accessToken,
+            string instance,
+            string collection,
+            List<string> teamProjects, 
+            List<long> excludedBuildDefinitionIds)
         {
             _logger = logger;
             _mapper = mapper;
             _accessToken = accessToken;
+            _excludedBuildDefinitionIds = excludedBuildDefinitionIds ?? new List<long>();
             _urls = urlBuilder.Build(instance, collection, teamProjects);
         }
 
@@ -52,7 +54,10 @@ namespace LightHouse.BuildProviders.DevOps
                 }
 
                 return responses
-                    .SelectMany(response => response.BuildDefinitions.Select(_mapper.Map<BuildDefinition, Build>))
+                    .SelectMany(response => response
+                        .BuildDefinitions
+                        .Where(bd => !_excludedBuildDefinitionIds.Contains(bd.Id))
+                        .Select(_mapper.Map<BuildDefinition, Build>))
                     .ToList();
             }
             catch (FlurlHttpTimeoutException)

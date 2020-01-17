@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using LightHouse.Lib;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace LightHouse

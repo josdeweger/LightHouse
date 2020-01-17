@@ -24,6 +24,7 @@ The following parameters can be passed to Lighthouse
 `--i  Instance, e.g. 'dev.azure.com'`<br/>
 `--c  Collection, your team collection`<br/>
 `--p  Team Projects, comma seperated`<br/>
+`--e  Excluded build definition id's, comma seperated`<br/>
 `--t  Token, needed for authentication`<br/>
 `--r  Refresh Interval, interval in seconds (Optional, defaults to 60)`<br/>
 `--b  Brightness, sets LED brightness, min = 1, max = 100 (Optional, defaults to 5)`<br/>
@@ -34,4 +35,4 @@ The following parameters can be passed to Lighthouse
 | Green | All builds were succesfull
 | Orange | One or more builds partially succeeded
 | Red | One or more builds failed
-| Flashing | Build currently in progress
+| Flashing | Build currently in progress, color indicates last known status

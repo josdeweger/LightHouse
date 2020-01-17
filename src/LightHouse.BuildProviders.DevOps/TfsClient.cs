@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using AutoMapper;
 using Flurl.Http;
 using LightHouse.Lib;
@@ -16,21 +15,23 @@ namespace LightHouse.BuildProviders.DevOps
         private readonly IMapper _mapper;
         private readonly string _userName;
         private readonly string _accessToken;
+        private readonly List<long> _excludedBuildDefinitionIds;
 
-        public TfsClient(
-            ILogger logger, 
-            IMapper mapper, 
+        public TfsClient(ILogger logger,
+            IMapper mapper,
             IUrlBuilder urlBuilder,
-            string userName, 
-            string accessToken, 
-            string instance, 
-            string collection, 
-            List<string> teamProjects)
+            string userName,
+            string accessToken,
+            string instance,
+            string collection,
+            List<string> teamProjects, 
+            List<long> excludedBuildDefinitionIds)
         {
             _logger = logger;
             _mapper = mapper;
             _userName = userName;
             _accessToken = accessToken;
+            _excludedBuildDefinitionIds = excludedBuildDefinitionIds ?? new List<long>();
             _urls = urlBuilder.Build(instance, collection, teamProjects);
         }
 
@@ -56,7 +57,10 @@ namespace LightHouse.BuildProviders.DevOps
                 }
 
                 return responses
-                    .SelectMany(response => response.BuildDefinitions.Select(_mapper.Map<BuildDefinition, Build>))
+                    .SelectMany(response => response
+                        .BuildDefinitions
+                        .Where(bd => !_excludedBuildDefinitionIds.Contains(bd.Id))
+                        .Select(_mapper.Map<BuildDefinition, Build>))
                     .ToList();
             }
             catch (FlurlHttpTimeoutException)

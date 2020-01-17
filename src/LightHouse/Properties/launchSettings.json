@@ -1,7 +1,8 @@
 {
   "profiles": {
     "LightHouse": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--s \"devops\" --i \"http://rhm-p-tfs01.kantoor.tld:8080/tfs\" --c \"RedHotMinute\" --p \"Landal Evolution Git\" --e \"562,564\" --t \"dwbufiaabjmezu4myxocdn5ukf7e3azyz3qhir5ydi5mq56mvjxq\" --r 60 --b 5"
     }
   }
 }

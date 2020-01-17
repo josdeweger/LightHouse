@@ -5,6 +5,7 @@
     <OutputType>Exe</OutputType>
     <TargetName>lighthouse</TargetName>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <RuntimeIdentifiers>win10-86;win10-x64;</RuntimeIdentifiers>
 	<Version>1.0.3</Version>
   </PropertyGroup>

@@ -38,7 +38,8 @@ namespace LightHouse
                             options.Token,
                             options.Instance,
                             options.Collection,
-                            options.TeamProjects.ToList()));
+                            options.TeamProjects.ToList(),
+                            options.ExcludeBuildDedfinitionIds.ToList()));
                     break;
                 case BuildService.Tfs:
                     serviceCollection.AddTransient<IProvideBuilds>(provider =>
@@ -50,7 +51,8 @@ namespace LightHouse
                             options.Token,
                             options.Instance,
                             options.Collection,
-                            options.TeamProjects.ToList()));
+                            options.TeamProjects.ToList(),
+                            options.ExcludeBuildDedfinitionIds.ToList()));
                     break;
                 default:
                     throw new Exception($"Unknown build service {options.Service}");
