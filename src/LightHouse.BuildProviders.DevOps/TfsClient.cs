@@ -35,7 +35,7 @@ namespace LightHouse.BuildProviders.DevOps
             _urls = urlBuilder.Build(instance, collection, teamProjects);
         }
 
-        public async Task<List<Build>> GetAllBuilds()
+        public async Task<List<Build>> GetWithStatus(BuildStatus statusFilter)
         {
             try
             {
@@ -44,10 +44,12 @@ namespace LightHouse.BuildProviders.DevOps
                 foreach (var tfsUrl in _urls)
                 {
                     var request = tfsUrl
-                        .WithBasicAuth(_userName, _accessToken)
+                        .WithBasicAuth(_accessToken, string.Empty)
                         .AppendPathSegment("build")
-                        .AppendPathSegment("Definitions")
-                        .SetQueryParam("includeLatestBuilds", true);
+                        .AppendPathSegment("definitions")
+                        .SetQueryParam("statusFilter", statusFilter.ToString())
+                        .SetQueryParam("maxBuildsPerDefinition", 1)
+                        .SetQueryParam("queryOrder", "finishTimeDescending");
 
                     _logger.Information($"Getting build definitions from url {request.Url}");
 

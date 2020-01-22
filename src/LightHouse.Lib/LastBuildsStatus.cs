@@ -6,6 +6,5 @@ namespace LightHouse.Lib
     {
         public AggregatedBuildStatus AggregatedBuildStatus { get; set; }
         public AggregatedBuildResult AggregatedBuildResult { get; set; }
-        public List<Build> LastBuilds { get; set; }
     }
 }

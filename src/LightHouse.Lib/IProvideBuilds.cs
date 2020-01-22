@@ -5,6 +5,6 @@ namespace LightHouse.Lib
 {
     public interface IProvideBuilds
     {
-        Task<List<Build>> GetAllBuilds();
+        Task<List<Build>> GetWithStatus(BuildStatus statusFilter);
     }
 }

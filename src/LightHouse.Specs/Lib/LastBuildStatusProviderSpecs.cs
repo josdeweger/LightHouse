@@ -13,16 +13,17 @@ namespace LightHouseSpecs.Lib
         public async void GivenOneOfLastBuildsFailed_WhenDeterminingBuildStatus_AggregatedResultIsFailed()
         {
             var buildsProviderMock = new Mock<IProvideBuilds>();
-            var lastBuildOne = new Build { Result = BuildResult.Failed };
-            var lastBuildTwo = new Build { Result = BuildResult.Succeeded };
+            var inProgressBuilds = new List<Build>();
+            var lastBuildOne = new Build { Result = BuildResult.Failed, Status = BuildStatus.Completed};
+            var lastBuildTwo = new Build { Result = BuildResult.Succeeded, Status = BuildStatus.Completed };
 
-            buildsProviderMock.Setup(b => b.GetAllBuilds()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
+            buildsProviderMock.Setup(b => b.GetWithStatus(BuildStatus.InProgress)).ReturnsAsync(inProgressBuilds);
+            buildsProviderMock.Setup(b => b.GetWithStatus(BuildStatus.Completed)).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
 
             var provider = new LastBuildsStatusProvider(buildsProviderMock.Object);
 
             var result = await provider.DetermineBuildStatus();
 
-            result.LastBuilds.Should().HaveCount(2);
             result.AggregatedBuildResult.Should().Be(AggregatedBuildResult.Failed);
         }
 
@@ -30,16 +31,17 @@ namespace LightHouseSpecs.Lib
         public async void GivenOneOfLastBuildsIsPartiallySuccessful_WhenDeterminingBuildStatus_AggregatedResultIsPartiallySucceeded()
         {
             var buildsProviderMock = new Mock<IProvideBuilds>();
-            var lastBuildOne = new Build {Result = BuildResult.PartiallySucceeded};
-            var lastBuildTwo = new Build {Result = BuildResult.Succeeded};
+            var inProgressBuilds = new List<Build>();
+            var lastBuildOne = new Build {Result = BuildResult.PartiallySucceeded, Status = BuildStatus.Completed };
+            var lastBuildTwo = new Build {Result = BuildResult.Succeeded, Status = BuildStatus.Completed };
 
-            buildsProviderMock.Setup(b => b.GetAllBuilds()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
+            buildsProviderMock.Setup(b => b.GetWithStatus(BuildStatus.InProgress)).ReturnsAsync(inProgressBuilds);
+            buildsProviderMock.Setup(b => b.GetWithStatus(BuildStatus.Completed)).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
 
             var provider = new LastBuildsStatusProvider(buildsProviderMock.Object);
 
             var result = await provider.DetermineBuildStatus();
 
-            result.LastBuilds.Should().HaveCount(2);
             result.AggregatedBuildResult.Should().Be(AggregatedBuildResult.PartiallySucceeded);
         }
 
@@ -47,16 +49,17 @@ namespace LightHouseSpecs.Lib
         public async void GivenAllLastBuildsAreSuccessful_WhenDeterminingBuildStatus_AggregatedResultIsSucceeded()
         {
             var buildsProviderMock = new Mock<IProvideBuilds>();
-            var lastBuildOne = new Build { Result = BuildResult.Succeeded };
-            var lastBuildTwo = new Build { Result = BuildResult.Succeeded };
+            var inProgressBuilds = new List<Build>();
+            var lastBuildOne = new Build { Result = BuildResult.Succeeded, Status = BuildStatus.Completed };
+            var lastBuildTwo = new Build { Result = BuildResult.Succeeded, Status = BuildStatus.Completed };
 
-            buildsProviderMock.Setup(b => b.GetAllBuilds()).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
+            buildsProviderMock.Setup(b => b.GetWithStatus(BuildStatus.InProgress)).ReturnsAsync(inProgressBuilds);
+            buildsProviderMock.Setup(b => b.GetWithStatus(BuildStatus.Completed)).ReturnsAsync(new List<Build> { lastBuildOne, lastBuildTwo });
 
             var provider = new LastBuildsStatusProvider(buildsProviderMock.Object);
 
             var result = await provider.DetermineBuildStatus();
 
-            result.LastBuilds.Should().HaveCount(2);
             result.AggregatedBuildResult.Should().Be(AggregatedBuildResult.Succeeded);
         }
     }
