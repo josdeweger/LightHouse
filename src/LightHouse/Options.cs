@@ -36,5 +36,8 @@ namespace LightHouse
 
         [Option('t', "token", Required = true, HelpText = "Token used to authenticate.")]
         public string Token { get; set; }
+
+        [Option('f', "enable-flashing", Required = false, HelpText = "Enable flashing when build in progress (true/false).")]
+        public bool? EnableFlashing { get; set; }
     }
 }

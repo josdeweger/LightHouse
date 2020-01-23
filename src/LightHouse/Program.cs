@@ -55,12 +55,12 @@ namespace LightHouse
             _logger.Information("Starting to watch build status...");
 
             await _buildsWatcher.Watch(lastBuildStatus =>
-                ProcessBuildsStatus(lastBuildStatus, Convert.ToByte(options.Brightness)));
+                ProcessBuildsStatus(lastBuildStatus, Convert.ToByte(options.Brightness), options.EnableFlashing));
         }
 
-        private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus, byte brightness)
+        private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus, byte brightness, bool? enableFlashing)
         {
-            _buildStatusLightController?.SetSignalLight(buildsStatus, brightness);
+            _buildStatusLightController?.SetSignalLight(buildsStatus, enableFlashing, brightness);
 
             _logger?.Information(
                 $"Build status: {buildsStatus.AggregatedBuildStatus.ToString()} | " +
