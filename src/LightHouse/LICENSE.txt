@@ -23,3 +23,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Autmapper license: https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt
+ASP NET Core license: https://github.com/dotnet/aspnetcore/blob/master/LICENSE.txt
+Commandline license: https://github.com/commandlineparser/commandline/blob/master/License.md
+Flurl license: https://github.com/tmenier/Flurl/blob/dev/LICENSE
+Newtonsoft license: https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
+Serilog license: https://github.com/serilog/serilog/blob/dev/LICENSE

@@ -1,3 +1,3 @@
 ﻿VERIFICATION
 
-All the .exe files in this package are created in the AppVeyor build belonging to this package. 
+All the .exe files in this package are created in the AppVeyor build belonging to this package at https://ci.appveyor.com/project/josdeweger/lighthouse
