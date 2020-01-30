@@ -32,7 +32,7 @@ namespace LightHouse
                     _signalLightController = _serviceProvider.GetService<IControlSignalLight>();
                     _buildStatusLightController = _serviceProvider.GetService<IControlBuildStatusLight>();
 
-                    //if (_buildStatusLightController?.IsConnected == true)
+                    if (_buildStatusLightController?.IsConnected == true)
                         await Start(options);
 
                     _logger.Information("Press any key to exit");
@@ -50,7 +50,7 @@ namespace LightHouse
 
             _logger.Information("Start sequence...");
 
-            //_signalLightController.Test();
+            _signalLightController.Test();
                 
             _logger.Information("Starting to watch build status...");
 
