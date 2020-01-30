@@ -32,7 +32,7 @@ namespace LightHouse.BuildProviders.DevOps
             _urls = urlBuilder.Build(instance, collection, teamProjects);
         }
 
-        public async Task<List<Build>> GetWithStatus(BuildStatus statusFilter)
+        public async Task<List<Lib.Build>> GetWithStatus(BuildStatus statusFilter)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace LightHouse.BuildProviders.DevOps
                     var request = vstsUrl
                         .WithBasicAuth(_accessToken, string.Empty)
                         .AppendPathSegment("build")
-                        .AppendPathSegment("definitions")
+                        .AppendPathSegment("builds")
                         .SetQueryParam("statusFilter", statusFilter.ToString())
                         .SetQueryParam("maxBuildsPerDefinition", 1)
                         .SetQueryParam("queryOrder", "finishTimeDescending");
@@ -57,9 +57,9 @@ namespace LightHouse.BuildProviders.DevOps
 
                 return responses
                     .SelectMany(response => response
-                        .BuildDefinitions
+                        .Builds
                         .Where(bd => !_excludedBuildDefinitionIds.Contains(bd.Id))
-                        .Select(_mapper.Map<BuildDefinition, Build>))
+                        .Select(_mapper.Map<Build, Lib.Build>))
                     .ToList();
             }
             catch (FlurlHttpTimeoutException)
@@ -79,7 +79,7 @@ namespace LightHouse.BuildProviders.DevOps
                 _logger.Error($"Response Body: {await ex.GetResponseStringAsync()}");
             }
 
-            return new List<Build>();
+            return new List<Lib.Build>();
         }
     }
 }
