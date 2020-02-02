@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,14 +14,12 @@ namespace LightHouse.BuildProviders.DevOps
         private readonly List<string> _urls;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        private readonly string _userName;
         private readonly string _accessToken;
         private readonly List<long> _excludedBuildDefinitionIds;
 
         public TfsClient(ILogger logger,
             IMapper mapper,
             IUrlBuilder urlBuilder,
-            string userName,
             string accessToken,
             string instance,
             string collection,
@@ -29,7 +28,6 @@ namespace LightHouse.BuildProviders.DevOps
         {
             _logger = logger;
             _mapper = mapper;
-            _userName = userName;
             _accessToken = accessToken;
             _excludedBuildDefinitionIds = excludedBuildDefinitionIds ?? new List<long>();
             _urls = urlBuilder.Build(instance, collection, teamProjects);
@@ -46,7 +44,7 @@ namespace LightHouse.BuildProviders.DevOps
                     var request = tfsUrl
                         .WithBasicAuth(_accessToken, string.Empty)
                         .AppendPathSegment("build")
-                        .AppendPathSegment("definitions")
+                        .AppendPathSegment("builds")
                         .SetQueryParam("statusFilter", statusFilter.ToString())
                         .SetQueryParam("maxBuildsPerDefinition", 1)
                         .SetQueryParam("queryOrder", "finishTimeDescending");
@@ -80,6 +78,11 @@ namespace LightHouse.BuildProviders.DevOps
                 _logger.Error($"Status code: {ex.Call.HttpStatus.ToString()}");
                 _logger.Error($"Request Body: {ex.Call.RequestBody}");
                 _logger.Error($"Response Body: {await ex.GetResponseStringAsync()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Something went wrong:");
+                _logger.Error(ex.Message);
             }
 
             return new List<Lib.Build>();

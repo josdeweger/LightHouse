@@ -5,16 +5,17 @@ using AutoMapper;
 using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
+using Lighthouse.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace LightHouse
+namespace Lighthouse.UI
 {
     public class Bootstrapper
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServices(Options options)
+        public static ServiceProvider InitServices(MainWindowViewModel options)
         {
             var serviceCollection = new ServiceCollection();
 
@@ -27,6 +28,14 @@ namespace LightHouse
 
             serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
 
+            var projects = options.Projects.Replace(" ", "").Split(',').ToList();
+            var excludedBuildDefinitionIds = options
+                .ExcludeBuildDefinitionIds
+                .Replace(" ", "")
+                .Split(',')
+                .Select(long.Parse)
+                .ToList();
+
             switch (options.Service)
             {
                 case BuildService.DevOps:
@@ -38,8 +47,8 @@ namespace LightHouse
                             options.Token,
                             options.Instance,
                             options.Collection,
-                            options.TeamProjects.ToList(),
-                            options.ExcludeBuildDedfinitionIds.ToList()));
+                            projects,
+                            excludedBuildDefinitionIds));
                     break;
                 case BuildService.Tfs:
                     serviceCollection.AddTransient<IProvideBuilds>(provider =>
@@ -50,8 +59,8 @@ namespace LightHouse
                             options.Token,
                             options.Instance,
                             options.Collection,
-                            options.TeamProjects.ToList(),
-                            options.ExcludeBuildDedfinitionIds.ToList()));
+                            projects,
+                            excludedBuildDefinitionIds));
                     break;
                 default:
                     throw new Exception($"Unknown build service {options.Service}");

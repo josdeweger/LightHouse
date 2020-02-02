@@ -31,9 +31,6 @@ namespace LightHouse
             HelpText = "Optional: build definition id's to exclude, comma seperated.")]
         public IEnumerable<long> ExcludeBuildDedfinitionIds { get; set; }
 
-        [Option('u', "username", Required = false, HelpText = "User name used to authenticate.")]
-        public string Username { get; set; }
-
         [Option('t', "token", Required = true, HelpText = "Token used to authenticate.")]
         public string Token { get; set; }
 
