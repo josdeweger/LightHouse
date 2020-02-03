@@ -36,14 +36,19 @@ namespace LightHouse.Lib
         private async Task<AggregatedBuildResult> DetermineAggregatedBuildResult()
         {
             //lastBuilds[_random.Next(lastBuilds.Count)].Result = GetRandomEnumValue<BuildResult>();
-            var completedBuids = await _buildsProvider.GetWithStatus(BuildStatus.Completed);
+            var completedBuilds = await _buildsProvider.GetWithStatus(BuildStatus.Completed);
 
-            if (completedBuids.Any(b => b.Result.Equals(BuildResult.Failed)))
+            if (!completedBuilds.Any())
+            {
+                return AggregatedBuildResult.None;
+            }
+
+            if (completedBuilds.Any(b => b.Result.Equals(BuildResult.Failed)))
             {
                 return AggregatedBuildResult.Failed;
             }
 
-            if (completedBuids.Any(b => b.Result.Equals(BuildResult.PartiallySucceeded)))
+            if (completedBuilds.Any(b => b.Result.Equals(BuildResult.PartiallySucceeded)))
             {
                 return AggregatedBuildResult.PartiallySucceeded;
             }

@@ -51,6 +51,7 @@ namespace LightHouse.BuildProviders.DevOps
 
                     _logger.Information($"Getting build definitions from url {request.Url}");
 
+                    var res = await request.GetAsync();
                     var response = await request.GetJsonAsync<BuildDefinitionsResponse>();
 
                     responses.Add(response);
@@ -78,11 +79,6 @@ namespace LightHouse.BuildProviders.DevOps
                 _logger.Error($"Status code: {ex.Call.HttpStatus.ToString()}");
                 _logger.Error($"Request Body: {ex.Call.RequestBody}");
                 _logger.Error($"Response Body: {await ex.GetResponseStringAsync()}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Something went wrong:");
-                _logger.Error(ex.Message);
             }
 
             return new List<Lib.Build>();

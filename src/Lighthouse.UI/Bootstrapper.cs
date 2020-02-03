@@ -5,6 +5,8 @@ using AutoMapper;
 using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
+using Lighthouse.UI.Logging;
+using Lighthouse.UI.Models;
 using Lighthouse.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -15,24 +17,26 @@ namespace Lighthouse.UI
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServices(MainWindowViewModel options)
+        public static ServiceProvider InitServices(LighthouseSettings options)
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddSingleton<ILogger>(
+            serviceCollection.AddSingleton(new InMemorySink());
+            serviceCollection.AddSingleton<ILogger>(provider =>
                 new LoggerConfiguration()
                     .MinimumLevel
                     .Debug()
-                    .WriteTo.Console()
+                    .WriteTo.Sink(provider.GetService<InMemorySink>())
                     .CreateLogger());
 
             serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
 
-            var projects = options.Projects.Replace(" ", "").Split(',').ToList();
+            var projects = options.Projects.Split(',').Select(p => p.TrimStart().TrimEnd()).ToList();
             var excludedBuildDefinitionIds = options
                 .ExcludeBuildDefinitionIds
                 .Replace(" ", "")
                 .Split(',')
+                .Select(p => p.TrimStart().TrimEnd())
                 .Select(long.Parse)
                 .ToList();
 
@@ -66,9 +70,9 @@ namespace Lighthouse.UI
                     throw new Exception($"Unknown build service {options.Service}");
             }
             
-            serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
-            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer(options.RefreshInterval));
-            serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
+            serviceCollection.AddSingleton<IWatchBuilds, BuildsWatcher>();
+            serviceCollection.AddSingleton<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
+            serviceCollection.AddSingleton<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();
             serviceCollection.AddSingleton<IUrlBuilder, DevOpsUrlBuilder>();

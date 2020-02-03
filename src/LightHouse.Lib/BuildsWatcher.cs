@@ -14,7 +14,7 @@ namespace LightHouse.Lib
             _buildStatusRefreshTimer = buildStatusRefreshTimer;
         }
 
-        public async Task Watch(Action<LastBuildsStatus> onRefreshAction)
+        public async Task Watch(Action<LastBuildsStatus> onRefreshAction, double refreshInterval)
         {
             _buildStatusRefreshTimer.OnElapsed(async () =>
             {
@@ -22,7 +22,12 @@ namespace LightHouse.Lib
                 onRefreshAction(buildsStatus);
             });
 
-            await _buildStatusRefreshTimer.Start();
+            await _buildStatusRefreshTimer.Start(refreshInterval);
+        }
+
+        public void Stop()
+        {
+            _buildStatusRefreshTimer.Stop();
         }
     }
 }

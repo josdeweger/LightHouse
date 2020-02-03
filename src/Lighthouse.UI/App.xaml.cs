@@ -28,7 +28,7 @@ namespace Lighthouse.UI
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new LighthouseViewModel(),
                 };
             }
 
