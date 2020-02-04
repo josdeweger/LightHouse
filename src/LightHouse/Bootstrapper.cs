@@ -58,7 +58,7 @@ namespace LightHouse
             }
             
             serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
-            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer(options.RefreshInterval));
+            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
             serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();

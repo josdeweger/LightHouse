@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Globalization;
+using Avalonia;
 using Avalonia.Data.Converters;
 
 namespace Lighthouse.UI.Converters
 {
-    public class EnumBooleanConverter : IValueConverter
+    public class EnumToBooleanConverter : IValueConverter
     {
+        public static EnumToBooleanConverter Instance = new EnumToBooleanConverter();
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is string parameterString))
-                return null;
-
-            if (Enum.IsDefined(value.GetType(), value) == false)
-                return null;
-
-            var parameterValue = Enum.Parse(value.GetType(), parameterString);
-
-            return parameterValue.Equals(value);
+            if (value != null)
+            {
+                return value.Equals(parameter);
+            }
+            return AvaloniaProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is string parameterString))
-                return null;
-
-            return Enum.Parse(targetType, parameterString);
+            if (value != null)
+            {
+                return (bool)value ? parameter : AvaloniaProperty.UnsetValue;
+            }
+            return AvaloniaProperty.UnsetValue;
         }
     }
 }

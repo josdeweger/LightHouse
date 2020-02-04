@@ -3,17 +3,14 @@
     xmlns:vm="clr-namespace:Lighthouse.UI.ViewModels;assembly=Lighthouse.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:Lighthouse.UI.Converters;assembly=Lighthouse.UI"
+    xmlns:lib="clr-namespace:LightHouse.Lib;assembly=LightHouse.Lib"
     mc:Ignorable="d"
     Height="580"
     Width="720"
     x:Class="Lighthouse.UI.Views.MainWindow"
-    xmlns:local="clr-namespace:Lighthouse.UI.Converters;assembly=Lighthouse.UI"
     Icon="/Assets/avalonia-logo.ico"
     Title="Lighthouse">
-
-  <Window.Resources>
-    <local:EnumBooleanConverter x:Key="enumBooleanConverter"/>
-  </Window.Resources>
 
   <ScrollViewer>
     <StackPanel Orientation="Horizontal" Spacing="4">
@@ -34,16 +31,16 @@
             <StackPanel
                 Orientation="Horizontal"
                 Spacing="16">
-
+               
               <RadioButton
                   IsEnabled="{Binding !IsRunning}"
-                  IsChecked="{Binding LighthouseSettings.Service, Mode=TwoWay, Converter={StaticResource enumBooleanConverter}, ConverterParameter=DevOps}">
+                  IsChecked="{Binding LighthouseSettings.Service, Converter={x:Static converters:EnumToBooleanConverter.Instance}, ConverterParameter={x:Static lib:BuildService.DevOps}}">
                 Azure Devops
               </RadioButton>
 
               <RadioButton
                   IsEnabled="{Binding !IsRunning}"
-                  IsChecked="{Binding LighthouseSettings.Service, Mode=TwoWay, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Tfs}">
+                  IsChecked="{Binding LighthouseSettings.Service, Converter={x:Static converters:EnumToBooleanConverter.Instance}, ConverterParameter={x:Static lib:BuildService.Tfs}}">
                 TFS
               </RadioButton>
 
@@ -127,8 +124,9 @@
 
             <Button
               Margin="0,10,0,0"
-              Command="{Binding OnStartStopClick}"
-              Content="{Binding ButtonText}">
+              Command="{Binding StartStopLighthouse}"
+              Content="{Binding ButtonText}"
+              Name="BtnStartStop">
               Start
             </Button>
             

@@ -1,72 +1,49 @@
-﻿using System;
-using LightHouse.Lib;
+﻿using LightHouse.Lib;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Lighthouse.UI.Models
 {
     public class LighthouseSettings : ReactiveObject
     {
-        private string _instance = "http://rhm-p-tfs01.kantoor.tld:8080/tfs";
-        public string Instance
-        {
-            get => _instance;
-            set => this.RaiseAndSetIfChanged(ref _instance, value);
-        }
+        [Reactive]
+        public string Instance { get; set; }
 
-        private BuildService _service = BuildService.Tfs;
-        public BuildService Service
-        {
-            get => _service;
-            set => this.RaiseAndSetIfChanged(ref _service, value);
-        }
+        [Reactive]
+        public BuildService Service { get; set; }
 
-        private string _collection = "RedHotMinute";
-        public string Collection
-        {
-            get => _collection;
-            set => this.RaiseAndSetIfChanged(ref _collection, value);
-        }
+        [Reactive]
+        public string Collection { get; set; }
 
-        private string _projects = "Landal Evolution Git";
-        public string Projects
-        {
-            get => _projects;
-            set => this.RaiseAndSetIfChanged(ref _projects, value);
-        }
+        [Reactive]
+        public string Projects { get; set; }
 
-        private string _excludeBuildDefinitionIds = "562,564";
-        public string ExcludeBuildDefinitionIds
-        {
-            get => _excludeBuildDefinitionIds;
-            set => this.RaiseAndSetIfChanged(ref _excludeBuildDefinitionIds, value);
-        }
+        [Reactive]
+        public string ExcludeBuildDefinitionIds { get; set; }
 
-        private string _token = "dwbufiaabjmezu4myxocdn5ukf7e3azyz3qhir5ydi5mq56mvjxq";
-        public string Token
-        {
-            get => _token;
-            set => this.RaiseAndSetIfChanged(ref _token, value);
-        }
+        [Reactive]
+        public string Token { get; set; }
 
-        private int _refreshInterval = 30;
-        public int RefreshInterval
-        {
-            get => _refreshInterval;
-            set => this.RaiseAndSetIfChanged(ref _refreshInterval, value);
-        }
+        [Reactive]
+        public int RefreshInterval { get; set; }
 
-        private int _brightness = 5;
-        public int Brightness
-        {
-            get => _brightness;
-            set => this.RaiseAndSetIfChanged(ref _brightness, value);
-        }
+        [Reactive]
+        public int Brightness { get; set; }
 
-        private bool _enableFlashing = false;
-        public bool EnableFlashing
+        [Reactive]
+        public bool EnableFlashing { get; set; }
+
+        public LighthouseSettings()
         {
-            get => _enableFlashing;
-            set => this.RaiseAndSetIfChanged(ref _enableFlashing, value);
+            Instance = "http://rhm-p-tfs01.kantoor.tld:8080/tfs";
+            Service = BuildService.Tfs;
+            Collection = "RedHotMinute";
+            Projects = "Landal Evolution Git";
+            ExcludeBuildDefinitionIds = "562,564";
+            Token = "dwbufiaabjmezu4myxocdn5ukf7e3azyz3qhir5ydi5mq56mvjxq";
+            RefreshInterval = 30;
+            Brightness = 5;
+            EnableFlashing = false;
         }
     }
 }

@@ -7,62 +7,52 @@ using Lighthouse.UI.Logging;
 using Lighthouse.UI.Models;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Extensions;
 using Serilog;
-using SharpDX.Direct2D1.Effects;
 
 namespace Lighthouse.UI.ViewModels
 {
-    public class LighthouseViewModel : ViewModelBase
+    public class LighthouseViewModel : ViewModelBase, IValidatableViewModel
     {
         private InMemorySink _inMemorySink;
         private static ILogger _logger;
         private static IWatchBuilds _buildsWatcher;
         private static IControlBuildStatusLight _buildStatusLightController;
         private static IControlSignalLight _signalLightController;
-        
-        private bool _isRunning;
 
-        public bool IsRunning
-        {
-            get => _isRunning;
-            set => this.RaiseAndSetIfChanged(ref _isRunning, value);
-        }
+        public ValidationContext ValidationContext { get; } = new ValidationContext();
 
-        private string _buttonText;
+        [Reactive]
+        public bool IsRunning { get; set; }
 
-        public string ButtonText
-        {
-            get => _buttonText;
-            set => this.RaiseAndSetIfChanged(ref _buttonText, value);
-        }
+        [Reactive]
+        public string ButtonText { get; set; }
 
-        private string _logs;
+        [Reactive]
+        public string Logs { get; set; }
 
-        public string Logs
-        {
-            get => _logs;
-            set => this.RaiseAndSetIfChanged(ref _logs, value);
-        }
+        [Reactive]
+        public LighthouseSettings LighthouseSettings { get; set; }
 
-        private LighthouseSettings _lighthouseSettings;
-
-        public LighthouseSettings LighthouseSettings
-        {
-            get => _lighthouseSettings;
-            set => this.RaiseAndSetIfChanged(ref _lighthouseSettings, value);
-        }
-
-        public ReactiveCommand<Unit, Unit> StartLighthouse { get; }
+        public ReactiveCommand<Unit, Unit> StartStopLighthouse { get; }
 
         public LighthouseViewModel()
         {
             IsRunning = false;
             ButtonText = "Start";
             LighthouseSettings = new LighthouseSettings();
-            StartLighthouse = ReactiveCommand.Create(OnStartStopClick);
+
+            SetValidationRules();
+
+            var canStart = this.IsValid();
+
+            StartStopLighthouse = ReactiveCommand.Create(OnStartStopClick, canStart);
         }
 
-        public void OnStartStopClick()
+        private void OnStartStopClick()
         {
             if (!IsRunning)
             {
@@ -140,6 +130,34 @@ namespace Lighthouse.UI.ViewModels
             _logger?.Information(
                 $"Build status: {buildsStatus.AggregatedBuildStatus.ToString()} | " +
                 $"Build result: {buildsStatus.AggregatedBuildResult.ToString()}");
+        }
+
+        private void SetValidationRules()
+        {
+            this.ValidationRule(
+                x => x.LighthouseSettings.Instance,
+                instance => !string.IsNullOrWhiteSpace(instance),
+                "You must specify a valid instance");
+
+            this.ValidationRule(
+                x => x.LighthouseSettings.Collection,
+                collection => !string.IsNullOrWhiteSpace(collection),
+                "You must specify a valid collection");
+
+            this.ValidationRule(
+                x => x.LighthouseSettings.Service,
+                service => service.GetType() == typeof(BuildService),
+                "You must specify a valid service");
+
+            this.ValidationRule(
+                x => x.LighthouseSettings.Projects,
+                projects => !string.IsNullOrWhiteSpace(projects),
+                "You must specify a valid service");
+
+            this.ValidationRule(
+                x => x.LighthouseSettings.Token,
+                token => !string.IsNullOrWhiteSpace(token),
+                "You must specify a valid service");
         }
     }
 }
