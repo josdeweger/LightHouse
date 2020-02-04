@@ -3,7 +3,7 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Data.Converters;
 
-namespace Lighthouse.UI.Converters
+namespace LightHouse.UI.Converters
 {
     public class EnumToBooleanConverter : IValueConverter
     {

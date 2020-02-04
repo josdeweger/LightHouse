@@ -1,14 +1,14 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="clr-namespace:Lighthouse.UI.ViewModels;assembly=Lighthouse.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:converters="clr-namespace:Lighthouse.UI.Converters;assembly=Lighthouse.UI"
+    xmlns:vm="clr-namespace:LightHouse.UI.ViewModels"
+    xmlns:local="clr-namespace:LightHouse.UI.Converters"
     xmlns:lib="clr-namespace:LightHouse.Lib;assembly=LightHouse.Lib"
     mc:Ignorable="d"
     Height="580"
     Width="720"
-    x:Class="Lighthouse.UI.Views.MainWindow"
+    x:Class="LightHouse.UI.Views.MainWindow"
     Icon="/Assets/avalonia-logo.ico"
     Title="Lighthouse">
 
@@ -34,13 +34,13 @@
                
               <RadioButton
                   IsEnabled="{Binding !IsRunning}"
-                  IsChecked="{Binding LighthouseSettings.Service, Converter={x:Static converters:EnumToBooleanConverter.Instance}, ConverterParameter={x:Static lib:BuildService.DevOps}}">
+                  IsChecked="{Binding LighthouseSettings.Service, Converter={x:Static local:EnumToBooleanConverter.Instance}, ConverterParameter={x:Static lib:BuildService.DevOps}}">
                 Azure Devops
               </RadioButton>
 
               <RadioButton
                   IsEnabled="{Binding !IsRunning}"
-                  IsChecked="{Binding LighthouseSettings.Service, Converter={x:Static converters:EnumToBooleanConverter.Instance}, ConverterParameter={x:Static lib:BuildService.Tfs}}">
+                  IsChecked="{Binding LighthouseSettings.Service, Converter={x:Static local:EnumToBooleanConverter.Instance}, ConverterParameter={x:Static lib:BuildService.Tfs}}">
                 TFS
               </RadioButton>
 

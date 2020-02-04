@@ -5,13 +5,12 @@ using AutoMapper;
 using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
-using Lighthouse.UI.Logging;
-using Lighthouse.UI.Models;
-using Lighthouse.UI.ViewModels;
+using LightHouse.UI.Logging;
+using LightHouse.UI.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace Lighthouse.UI
+namespace LightHouse.UI
 {
     public class Bootstrapper
     {
@@ -29,7 +28,7 @@ namespace Lighthouse.UI
                     .WriteTo.Sink(provider.GetService<InMemorySink>())
                     .CreateLogger());
 
-            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
+            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("LightHouse."));
 
             var projects = options.Projects.Split(',').Select(p => p.TrimStart().TrimEnd()).ToList();
             var excludedBuildDefinitionIds = options

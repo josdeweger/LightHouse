@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ReactiveUI;
+﻿using ReactiveUI;
 
-namespace Lighthouse.UI.ViewModels
+namespace LightHouse.UI.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {

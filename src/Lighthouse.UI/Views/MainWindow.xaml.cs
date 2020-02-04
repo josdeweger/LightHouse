@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Lighthouse.UI.Views
+namespace LightHouse.UI.Views
 {
     public class MainWindow : Window
     {

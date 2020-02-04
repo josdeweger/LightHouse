@@ -3,8 +3,8 @@ using System.Collections.Specialized;
 using System.Reactive;
 using System.Threading.Tasks;
 using LightHouse.Lib;
-using Lighthouse.UI.Logging;
-using Lighthouse.UI.Models;
+using LightHouse.UI.Logging;
+using LightHouse.UI.Models;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -13,7 +13,7 @@ using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 using Serilog;
 
-namespace Lighthouse.UI.ViewModels
+namespace LightHouse.UI.ViewModels
 {
     public class LighthouseViewModel : ViewModelBase, IValidatableViewModel
     {

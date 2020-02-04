@@ -25,7 +25,7 @@ namespace LightHouse
                     .WriteTo.Console()
                     .CreateLogger());
 
-            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
+            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("LightHouse."));
 
             switch (options.Service)
             {

@@ -2,7 +2,7 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace Lighthouse.UI.Models
+namespace LightHouse.UI.Models
 {
     public class LighthouseSettings : ReactiveObject
     {

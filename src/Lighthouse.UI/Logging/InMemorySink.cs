@@ -8,7 +8,7 @@ using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
 
-namespace Lighthouse.UI.Logging
+namespace LightHouse.UI.Logging
 {
     class InMemorySink : ILogEventSink
     {

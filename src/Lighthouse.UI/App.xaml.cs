@@ -1,19 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using AutoMapper;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using LightHouse.BuildProviders.DevOps;
-using LightHouse.Delcom.SignalLight;
-using LightHouse.Lib;
-using Lighthouse.UI.ViewModels;
-using Lighthouse.UI.Views;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
+using LightHouse.UI.ViewModels;
+using LightHouse.UI.Views;
 
-namespace Lighthouse.UI
+namespace LightHouse.UI
 {
     public class App : Application
     {
