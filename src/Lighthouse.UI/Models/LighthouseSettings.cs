@@ -1,11 +1,14 @@
 ﻿using LightHouse.Lib;
+using LightHouse.UI.Persistence;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace LightHouse.UI.Models
 {
-    public class LighthouseSettings : ReactiveObject
+    public class LighthouseSettings : ReactiveObject, IModelBase
     {
+        public int Id => 1;
+
         [Reactive]
         public string Instance { get; set; }
 
@@ -33,17 +36,14 @@ namespace LightHouse.UI.Models
         [Reactive]
         public bool EnableFlashing { get; set; }
 
-        public LighthouseSettings()
+        public static LighthouseSettings Default()
         {
-            Instance = "http://rhm-p-tfs01.kantoor.tld:8080/tfs";
-            Service = BuildService.Tfs;
-            Collection = "RedHotMinute";
-            Projects = "Landal Evolution Git";
-            ExcludeBuildDefinitionIds = "562,564";
-            Token = "dwbufiaabjmezu4myxocdn5ukf7e3azyz3qhir5ydi5mq56mvjxq";
-            RefreshInterval = 30;
-            Brightness = 5;
-            EnableFlashing = false;
+            return new LighthouseSettings
+            {
+                RefreshInterval = 30,
+                Brightness = 5,
+                EnableFlashing = true
+            };
         }
     }
 }

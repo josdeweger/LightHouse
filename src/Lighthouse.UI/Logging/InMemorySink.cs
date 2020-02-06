@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -10,7 +9,7 @@ using Serilog.Formatting.Display;
 
 namespace LightHouse.UI.Logging
 {
-    class InMemorySink : ILogEventSink
+    public class InMemorySink : ILogEventSink
     {
         private readonly ITextFormatter _textFormatter =
             new MessageTemplateTextFormatter("[{Level}] {Message}{Exception}",

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using LightHouse.Lib;
 using LightHouse.UI.Logging;
 using LightHouse.UI.Models;
-using Microsoft.Extensions.DependencyInjection;
+using LightHouse.UI.Persistence;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI.Validation.Abstractions;
@@ -17,11 +18,13 @@ namespace LightHouse.UI.ViewModels
 {
     public class LighthouseViewModel : ViewModelBase, IValidatableViewModel
     {
-        private InMemorySink _inMemorySink;
-        private static ILogger _logger;
-        private static IWatchBuilds _buildsWatcher;
-        private static IControlBuildStatusLight _buildStatusLightController;
-        private static IControlSignalLight _signalLightController;
+        private readonly InMemorySink _inMemorySink;
+        private readonly ILogger _logger;
+        private readonly IWatchBuilds _buildsWatcher;
+        private readonly IControlBuildStatusLight _buildStatusLightController;
+        private readonly IControlSignalLight _signalLightController;
+        private readonly Db _db;
+        private readonly string _settingsCollection = "Settings";
 
         public ValidationContext ValidationContext { get; } = new ValidationContext();
 
@@ -39,21 +42,43 @@ namespace LightHouse.UI.ViewModels
 
         public ReactiveCommand<Unit, Unit> StartStopLighthouse { get; }
 
-        public LighthouseViewModel()
+        public LighthouseViewModel(
+            Db db,
+            ILogger logger, 
+            InMemorySink inMemmorySink,
+            IWatchBuilds buildsWatcher, 
+            IControlBuildStatusLight buildStatusLightController, 
+            IControlSignalLight signalLightController)
         {
+            _db = db;
+            _logger = logger;
+            _inMemorySink = inMemmorySink;
+            _inMemorySink.Events.CollectionChanged += LogEventsCollectionChangedHandler;
+            _buildsWatcher = buildsWatcher;
+            _buildStatusLightController = buildStatusLightController;
+            _signalLightController = signalLightController;
+
             IsRunning = false;
             ButtonText = "Start";
-            LighthouseSettings = new LighthouseSettings();
-
+            LighthouseSettings = GetSettings();
             SetValidationRules();
+            StartStopLighthouse = ReactiveCommand.Create(OnStartStopClick, this.IsValid());
+        }
 
-            var canStart = this.IsValid();
+        private LighthouseSettings GetSettings()
+        {
+            var maybeSettings = _db.FindById<LighthouseSettings>(_settingsCollection, 1);
 
-            StartStopLighthouse = ReactiveCommand.Create(OnStartStopClick, canStart);
+            if (maybeSettings.HasValue)
+                return maybeSettings.Value;
+
+            return LighthouseSettings.Default();
         }
 
         private void OnStartStopClick()
         {
+            _db.Save(LighthouseSettings, _settingsCollection);
+
             if (!IsRunning)
             {
                 RunLighthouse();
@@ -72,17 +97,9 @@ namespace LightHouse.UI.ViewModels
         {
             Task.Run(async () =>
             {
-                var serviceProvider = Bootstrapper.InitServices(LighthouseSettings);
-                _logger = serviceProvider.GetService<ILogger>();
-                _inMemorySink = serviceProvider.GetService<InMemorySink>();
-                
-                _inMemorySink.Events.CollectionChanged += LogEventsCollectionChangedHandler;
-                
-                _buildsWatcher = serviceProvider.GetService<IWatchBuilds>();
-                _signalLightController = serviceProvider.GetService<IControlSignalLight>();
-                _buildStatusLightController = serviceProvider.GetService<IControlBuildStatusLight>();
+                if (_buildStatusLightController?.IsConnected == false)
+                    _logger.Information("Signal light not connected! Continuing without device...");
 
-                //if (_buildStatusLightController?.IsConnected == true)
                 await Start();
             });
         }
@@ -96,8 +113,8 @@ namespace LightHouse.UI.ViewModels
         {
             Task.Run(() =>
             {
-                Bootstrapper.ServiceProvider?.GetService<IControlSignalLight>()?.TurnOffAll();
-                Bootstrapper.ServiceProvider?.GetService<IWatchBuilds>()?.Stop();
+                _signalLightController?.TurnOffAll();
+                _buildsWatcher?.Stop();
             });
         }
 
@@ -115,9 +132,33 @@ namespace LightHouse.UI.ViewModels
 
             _logger.Information("Starting to watch build status...");
 
+            var teamProjects = LighthouseSettings.Projects
+                .Split(',')
+                .Select(p => p.TrimStart().TrimEnd())
+                .ToList();
+
+            var excludedBuildDefinitionIds = LighthouseSettings
+                .ExcludeBuildDefinitionIds
+                .Replace(" ", "")
+                .Split(',')
+                .Select(p => p.TrimStart().TrimEnd())
+                .Select(long.Parse)
+                .ToList();
+
+            var buildProviderSettings = new BuildProviderSettings
+            {
+                AccessToken = LighthouseSettings.Token,
+                Collection = LighthouseSettings.Collection,
+                Instance = LighthouseSettings.Instance,
+                ExcludedBuildDefinitionIds = excludedBuildDefinitionIds,
+                TeamProjects = teamProjects
+            };
+
             await _buildsWatcher.Watch(
-                onRefreshAction: ProcessBuildsStatus,
-                refreshInterval: LighthouseSettings.RefreshInterval);
+                buildService: LighthouseSettings.Service,
+                buildProviderSettings: buildProviderSettings,
+                refreshInterval: LighthouseSettings.RefreshInterval,
+                onRefreshAction: ProcessBuildsStatus);
         }
 
         private void ProcessBuildsStatus(LastBuildsStatus buildsStatus)
@@ -152,12 +193,12 @@ namespace LightHouse.UI.ViewModels
             this.ValidationRule(
                 x => x.LighthouseSettings.Projects,
                 projects => !string.IsNullOrWhiteSpace(projects),
-                "You must specify a valid service");
+                "You must specify valid projects (comma seperated, spaces allowed)");
 
             this.ValidationRule(
                 x => x.LighthouseSettings.Token,
                 token => !string.IsNullOrWhiteSpace(token),
-                "You must specify a valid service");
+                "You must specify a valid token");
         }
     }
 }

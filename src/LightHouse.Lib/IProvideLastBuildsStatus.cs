@@ -4,6 +4,6 @@ namespace LightHouse.Lib
 {
     public interface IProvideLastBuildsStatus
     {
-        Task<LastBuildsStatus> DetermineBuildStatus();
+        Task<LastBuildsStatus> DetermineBuildStatus(BuildService buildService, BuildProviderSettings buildProviderSettings);
     }
 }

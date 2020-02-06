@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LightHouse.Lib
+﻿namespace LightHouse.Lib
 {
     public class Build
     {

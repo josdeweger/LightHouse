@@ -6,7 +6,7 @@ using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
 using LightHouse.UI.Logging;
-using LightHouse.UI.Models;
+using LightHouse.UI.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -16,7 +16,7 @@ namespace LightHouse.UI
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServices(LighthouseSettings options)
+        public static ServiceProvider InitServices()
         {
             var serviceCollection = new ServiceCollection();
 
@@ -28,47 +28,12 @@ namespace LightHouse.UI
                     .WriteTo.Sink(provider.GetService<InMemorySink>())
                     .CreateLogger());
 
+            serviceCollection.AddSingleton<Db>();
+
             serviceCollection.AddAutoMapper(GetAssembliesStartingWith("LightHouse."));
-
-            var projects = options.Projects.Split(',').Select(p => p.TrimStart().TrimEnd()).ToList();
-            var excludedBuildDefinitionIds = options
-                .ExcludeBuildDefinitionIds
-                .Replace(" ", "")
-                .Split(',')
-                .Select(p => p.TrimStart().TrimEnd())
-                .Select(long.Parse)
-                .ToList();
-
-            switch (options.Service)
-            {
-                case BuildService.DevOps:
-                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
-                        new DevOpsClient(
-                            provider.GetService<ILogger>(),
-                            provider.GetService<IMapper>(),
-                            provider.GetService<IUrlBuilder>(),
-                            options.Token,
-                            options.Instance,
-                            options.Collection,
-                            projects,
-                            excludedBuildDefinitionIds));
-                    break;
-                case BuildService.Tfs:
-                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
-                        new TfsClient(
-                            provider.GetService<ILogger>(),
-                            provider.GetService<IMapper>(),
-                            provider.GetService<IUrlBuilder>(),
-                            options.Token,
-                            options.Instance,
-                            options.Collection,
-                            projects,
-                            excludedBuildDefinitionIds));
-                    break;
-                default:
-                    throw new Exception($"Unknown build service {options.Service}");
-            }
-            
+            serviceCollection.AddTransient<DevOpsClient>();
+            serviceCollection.AddTransient<TfsClient>();
+            serviceCollection.AddTransient<IProvideBuilds, OptionBasedBuildProvider>();
             serviceCollection.AddSingleton<IWatchBuilds, BuildsWatcher>();
             serviceCollection.AddSingleton<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
             serviceCollection.AddSingleton<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
