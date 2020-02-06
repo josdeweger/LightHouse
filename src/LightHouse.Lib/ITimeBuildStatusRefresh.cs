@@ -6,6 +6,7 @@ namespace LightHouse.Lib
     public interface ITimeBuildStatusRefresh
     {
         ITimeBuildStatusRefresh OnElapsed(Func<Task> eventHandler);
-        Task Start();
+        Task Start(double intervalInSeconds);
+        void Stop();
     }
 }

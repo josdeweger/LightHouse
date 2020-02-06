@@ -53,7 +53,6 @@ namespace LightHouse.Delcom.SignalLight
             else
             {
                 IsConnected = false;
-                _logger.Information("Signal Light device unplugged!");
             }
         }
 
@@ -175,11 +174,7 @@ namespace LightHouse.Delcom.SignalLight
 
         private void WriteToDevice(byte[] values)
         {
-            if (!IsConnected)
-            {
-                _logger.Information("Can not write bytes because device is not connected");
-            }
-            else
+            if (IsConnected)
             {
                 try
                 {

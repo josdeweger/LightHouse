@@ -1,10 +1,8 @@
-﻿using System;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia;
 using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
 
-namespace Lighthouse.UI
+namespace LightHouse.UI
 {
     class Program
     {

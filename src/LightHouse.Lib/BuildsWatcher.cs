@@ -14,15 +14,25 @@ namespace LightHouse.Lib
             _buildStatusRefreshTimer = buildStatusRefreshTimer;
         }
 
-        public async Task Watch(Action<LastBuildsStatus> onRefreshAction)
+        public async Task Watch(
+            BuildService buildService, 
+            BuildProviderSettings buildProviderSettings,
+            double refreshInterval,
+            Action<LastBuildsStatus> onRefreshAction)
         {
             _buildStatusRefreshTimer.OnElapsed(async () =>
             {
-                var buildsStatus = await _buildsStatusProvider.DetermineBuildStatus();
+                var buildsStatus = await _buildsStatusProvider.DetermineBuildStatus(buildService, buildProviderSettings);
+
                 onRefreshAction(buildsStatus);
             });
 
-            await _buildStatusRefreshTimer.Start();
+            await _buildStatusRefreshTimer.Start(refreshInterval);
+        }
+
+        public void Stop()
+        {
+            _buildStatusRefreshTimer.Stop();
         }
     }
 }

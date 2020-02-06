@@ -14,7 +14,7 @@ namespace LightHouse
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServices(Options options)
+        public static ServiceProvider InitServices()
         {
             var serviceCollection = new ServiceCollection();
 
@@ -25,40 +25,11 @@ namespace LightHouse
                     .WriteTo.Console()
                     .CreateLogger());
 
-            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
-
-            switch (options.Service)
-            {
-                case BuildService.DevOps:
-                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
-                        new DevOpsClient(
-                            provider.GetService<ILogger>(),
-                            provider.GetService<IMapper>(),
-                            provider.GetService<IUrlBuilder>(),
-                            options.Token,
-                            options.Instance,
-                            options.Collection,
-                            options.TeamProjects.ToList(),
-                            options.ExcludeBuildDedfinitionIds.ToList()));
-                    break;
-                case BuildService.Tfs:
-                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
-                        new TfsClient(
-                            provider.GetService<ILogger>(),
-                            provider.GetService<IMapper>(),
-                            provider.GetService<IUrlBuilder>(),
-                            options.Token,
-                            options.Instance,
-                            options.Collection,
-                            options.TeamProjects.ToList(),
-                            options.ExcludeBuildDedfinitionIds.ToList()));
-                    break;
-                default:
-                    throw new Exception($"Unknown build service {options.Service}");
-            }
-            
+            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("LightHouse."));
+            serviceCollection.AddTransient<DevOpsClient>();
+            serviceCollection.AddTransient<TfsClient>();
             serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
-            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer(options.RefreshInterval));
+            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
             serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();

@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Lighthouse.UI.ViewModels;
+using LightHouse.UI.ViewModels;
 
-namespace Lighthouse.UI
+namespace LightHouse.UI
 {
     public class ViewLocator : IDataTemplate
     {

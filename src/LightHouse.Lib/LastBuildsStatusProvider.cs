@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,35 +14,40 @@ namespace LightHouse.Lib
             _buildsProvider = buildsProvider;
         }
 
-        public async Task<LastBuildsStatus> DetermineBuildStatus()
+        public async Task<LastBuildsStatus> DetermineBuildStatus(BuildService buildService, BuildProviderSettings buildProviderSettings)
         {
             return new LastBuildsStatus
             {
-                AggregatedBuildStatus = await DetermineAggregatedBuildStatus(),
-                AggregatedBuildResult = await DetermineAggregatedBuildResult()
+                AggregatedBuildStatus = await DetermineAggregatedBuildStatus(buildService, buildProviderSettings),
+                AggregatedBuildResult = await DetermineAggregatedBuildResult(buildService, buildProviderSettings)
             };
         }
 
-        private async Task<AggregatedBuildStatus> DetermineAggregatedBuildStatus()
+        private async Task<AggregatedBuildStatus> DetermineAggregatedBuildStatus(BuildService buildService, BuildProviderSettings buildProviderSettings)
         {
             //var randomBit = _random.Next(0, 2);
             //lastBuilds[_random.Next(lastBuilds.Count)].Status = randomBit == 1 ? BuildStatus.Completed : BuildStatus.InProgress;
-            var inProgressBuilds = await _buildsProvider.GetWithStatus(BuildStatus.InProgress);
+            var inProgressBuilds = await _buildsProvider.GetWithStatus(buildService, BuildStatus.InProgress, buildProviderSettings);
 
             return inProgressBuilds.Any() ? AggregatedBuildStatus.InProgress : AggregatedBuildStatus.Completed;
         }
 
-        private async Task<AggregatedBuildResult> DetermineAggregatedBuildResult()
+        private async Task<AggregatedBuildResult> DetermineAggregatedBuildResult(BuildService buildService, BuildProviderSettings buildProviderSettings)
         {
             //lastBuilds[_random.Next(lastBuilds.Count)].Result = GetRandomEnumValue<BuildResult>();
-            var completedBuids = await _buildsProvider.GetWithStatus(BuildStatus.Completed);
+            var completedBuilds = await _buildsProvider.GetWithStatus(buildService, BuildStatus.Completed, buildProviderSettings);
 
-            if (completedBuids.Any(b => b.Result.Equals(BuildResult.Failed)))
+            if (!completedBuilds.Any())
+            {
+                return AggregatedBuildResult.None;
+            }
+
+            if (completedBuilds.Any(b => b.Result.Equals(BuildResult.Failed)))
             {
                 return AggregatedBuildResult.Failed;
             }
 
-            if (completedBuids.Any(b => b.Result.Equals(BuildResult.PartiallySucceeded)))
+            if (completedBuilds.Any(b => b.Result.Equals(BuildResult.PartiallySucceeded)))
             {
                 return AggregatedBuildResult.PartiallySucceeded;
             }

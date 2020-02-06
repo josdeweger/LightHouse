@@ -36,6 +36,9 @@
                     case AggregatedBuildResult.Succeeded:
                         _signalLightController.TurnOnColor(SignalLightColor.Green, brightness, flash);
                         break;
+                    case AggregatedBuildResult.None:
+                        _signalLightController.TurnOffAll();
+                        break;
                 }
             }
         }

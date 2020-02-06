@@ -5,70 +5,38 @@ using AutoMapper;
 using LightHouse.BuildProviders.DevOps;
 using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
-using Lighthouse.UI.ViewModels;
+using LightHouse.UI.Logging;
+using LightHouse.UI.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace Lighthouse.UI
+namespace LightHouse.UI
 {
     public class Bootstrapper
     {
         public static ServiceProvider ServiceProvider;
 
-        public static ServiceProvider InitServices(MainWindowViewModel options)
+        public static ServiceProvider InitServices()
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddSingleton<ILogger>(
+            serviceCollection.AddSingleton(new InMemorySink());
+            serviceCollection.AddSingleton<ILogger>(provider =>
                 new LoggerConfiguration()
                     .MinimumLevel
                     .Debug()
-                    .WriteTo.Console()
+                    .WriteTo.Sink(provider.GetService<InMemorySink>())
                     .CreateLogger());
 
-            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("Lighthouse."));
+            serviceCollection.AddSingleton<Db>();
 
-            var projects = options.Projects.Replace(" ", "").Split(',').ToList();
-            var excludedBuildDefinitionIds = options
-                .ExcludeBuildDefinitionIds
-                .Replace(" ", "")
-                .Split(',')
-                .Select(long.Parse)
-                .ToList();
-
-            switch (options.Service)
-            {
-                case BuildService.DevOps:
-                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
-                        new DevOpsClient(
-                            provider.GetService<ILogger>(),
-                            provider.GetService<IMapper>(),
-                            provider.GetService<IUrlBuilder>(),
-                            options.Token,
-                            options.Instance,
-                            options.Collection,
-                            projects,
-                            excludedBuildDefinitionIds));
-                    break;
-                case BuildService.Tfs:
-                    serviceCollection.AddTransient<IProvideBuilds>(provider =>
-                        new TfsClient(
-                            provider.GetService<ILogger>(),
-                            provider.GetService<IMapper>(),
-                            provider.GetService<IUrlBuilder>(),
-                            options.Token,
-                            options.Instance,
-                            options.Collection,
-                            projects,
-                            excludedBuildDefinitionIds));
-                    break;
-                default:
-                    throw new Exception($"Unknown build service {options.Service}");
-            }
-            
-            serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
-            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer(options.RefreshInterval));
-            serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
+            serviceCollection.AddAutoMapper(GetAssembliesStartingWith("LightHouse."));
+            serviceCollection.AddTransient<DevOpsClient>();
+            serviceCollection.AddTransient<TfsClient>();
+            serviceCollection.AddTransient<IProvideBuilds, OptionBasedBuildProvider>();
+            serviceCollection.AddSingleton<IWatchBuilds, BuildsWatcher>();
+            serviceCollection.AddSingleton<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
+            serviceCollection.AddSingleton<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();
             serviceCollection.AddSingleton<IUrlBuilder, DevOpsUrlBuilder>();

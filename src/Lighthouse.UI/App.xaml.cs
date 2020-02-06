@@ -1,19 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using AutoMapper;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using LightHouse.BuildProviders.DevOps;
-using LightHouse.Delcom.SignalLight;
 using LightHouse.Lib;
-using Lighthouse.UI.ViewModels;
-using Lighthouse.UI.Views;
+using LightHouse.UI.Logging;
+using LightHouse.UI.Persistence;
+using LightHouse.UI.ViewModels;
+using LightHouse.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace Lighthouse.UI
+namespace LightHouse.UI
 {
     public class App : Application
     {
@@ -26,9 +22,18 @@ namespace Lighthouse.UI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var serviceProvider = Bootstrapper.InitServices();
+
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new LighthouseViewModel(
+                        serviceProvider.GetService<Db>(),
+                        serviceProvider.GetService<ILogger>(),
+                        serviceProvider.GetService<InMemorySink>(),
+                        serviceProvider.GetService<IWatchBuilds>(),
+                        serviceProvider.GetService<IControlBuildStatusLight>(),
+                        serviceProvider.GetService<IControlSignalLight>()
+                    )
                 };
             }
 

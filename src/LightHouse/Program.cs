@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
 using LightHouse.Lib;
@@ -26,7 +27,7 @@ namespace LightHouse
                 .ParseArguments<Options>(args)
                 .WithParsed(async options =>
                 {
-                    _serviceProvider = Bootstrapper.InitServices(options);
+                    _serviceProvider = Bootstrapper.InitServices();
                     _logger = _serviceProvider.GetService<ILogger>();
                     _buildsWatcher = _serviceProvider.GetService<IWatchBuilds>();
                     _signalLightController = _serviceProvider.GetService<IControlSignalLight>();
@@ -54,13 +55,25 @@ namespace LightHouse
                 
             _logger.Information("Starting to watch build status...");
 
-            await _buildsWatcher.Watch(lastBuildStatus =>
-                ProcessBuildsStatus(lastBuildStatus, Convert.ToByte(options.Brightness), options.EnableFlashing));
+            var buildProviderSettings = new BuildProviderSettings
+            {
+                AccessToken = options.Token,
+                Collection = options.Collection,
+                Instance = options.Instance,
+                ExcludedBuildDefinitionIds = options.ExcludeBuildDedfinitionIds.ToList(),
+                TeamProjects = options.TeamProjects.ToList()
+            };
+
+            await _buildsWatcher.Watch(
+                buildService: options.Service,
+                buildProviderSettings: buildProviderSettings,
+                refreshInterval: options.RefreshInterval,
+                onRefreshAction: buildsStatus => ProcessBuildsStatus(buildsStatus, options.Brightness, options.EnableFlashing));
         }
 
-        private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus, byte brightness, bool? enableFlashing)
+        private static void ProcessBuildsStatus(LastBuildsStatus buildsStatus, double brightness, bool? enableFlashing)
         {
-            _buildStatusLightController?.SetSignalLight(buildsStatus, enableFlashing, brightness);
+            _buildStatusLightController?.SetSignalLight(buildsStatus, enableFlashing, Convert.ToByte(brightness));
 
             _logger?.Information(
                 $"Build status: {buildsStatus.AggregatedBuildStatus.ToString()} | " +

@@ -8,40 +8,31 @@ using Serilog;
 
 namespace LightHouse.BuildProviders.DevOps
 {
-    public class DevOpsClient : IProvideBuilds
+    public class DevOpsClient
     {
-        private readonly List<string> _urls;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        private readonly string _accessToken;
-        private readonly List<long> _excludedBuildDefinitionIds;
+        private readonly IUrlBuilder _urlBuilder;
 
-        public DevOpsClient(ILogger logger,
-            IMapper mapper,
-            IUrlBuilder urlBuilder,
-            string accessToken,
-            string instance,
-            string collection,
-            List<string> teamProjects, 
-            List<long> excludedBuildDefinitionIds)
+        public DevOpsClient(ILogger logger, IMapper mapper, IUrlBuilder urlBuilder)
         {
             _logger = logger;
             _mapper = mapper;
-            _accessToken = accessToken;
-            _excludedBuildDefinitionIds = excludedBuildDefinitionIds ?? new List<long>();
-            _urls = urlBuilder.Build(instance, collection, teamProjects);
+            _urlBuilder = urlBuilder;
         }
 
-        public async Task<List<Lib.Build>> GetWithStatus(BuildStatus statusFilter)
+        public async Task<List<Lib.Build>> GetWithStatus(BuildStatus statusFilter, BuildProviderSettings buildProviderSettings)
         {
             try
             {
+                var excludedBuildDefinitionIds = buildProviderSettings.ExcludedBuildDefinitionIds ?? new List<long>();
+                var urls = _urlBuilder.Build(buildProviderSettings.Instance, buildProviderSettings.Collection, buildProviderSettings.TeamProjects);
                 var responses = new List<BuildDefinitionsResponse>();
 
-                foreach (var vstsUrl in _urls)
+                foreach (var vstsUrl in urls)
                 {
                     var request = vstsUrl
-                        .WithBasicAuth(_accessToken, string.Empty)
+                        .WithBasicAuth(buildProviderSettings.AccessToken, string.Empty)
                         .AppendPathSegment("build")
                         .AppendPathSegment("builds")
                         .SetQueryParam("statusFilter", statusFilter.ToString())
@@ -58,7 +49,7 @@ namespace LightHouse.BuildProviders.DevOps
                 return responses
                     .SelectMany(response => response
                         .Builds
-                        .Where(bd => !_excludedBuildDefinitionIds.Contains(bd.Id))
+                        .Where(bd => !excludedBuildDefinitionIds.Contains(bd.Id))
                         .Select(_mapper.Map<Build, Lib.Build>))
                     .ToList();
             }

@@ -4,6 +4,7 @@
     {
         Failed,
         PartiallySucceeded,
-        Succeeded
+        Succeeded,
+        None
     }
 }
