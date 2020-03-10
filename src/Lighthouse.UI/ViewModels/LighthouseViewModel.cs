@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive;
@@ -106,7 +107,7 @@ namespace LightHouse.UI.ViewModels
 
         private void LogEventsCollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Logs = string.Join('\n', _inMemorySink.Events);
+            Logs = string.Join('\n', _inMemorySink.Events.Skip(Math.Max(0, _inMemorySink.Events.Count() - 50)));
         }
 
         private void StopLighthouse()
@@ -132,26 +133,13 @@ namespace LightHouse.UI.ViewModels
 
             _logger.Information("Starting to watch build status...");
 
-            var teamProjects = LighthouseSettings.Projects
-                .Split(',')
-                .Select(p => p.TrimStart().TrimEnd())
-                .ToList();
-
-            var excludedBuildDefinitionIds = LighthouseSettings
-                .ExcludeBuildDefinitionIds
-                .Replace(" ", "")
-                .Split(',')
-                .Select(p => p.TrimStart().TrimEnd())
-                .Select(long.Parse)
-                .ToList();
-
             var buildProviderSettings = new BuildProviderSettings
             {
                 AccessToken = LighthouseSettings.Token,
                 Collection = LighthouseSettings.Collection,
                 Instance = LighthouseSettings.Instance,
-                ExcludedBuildDefinitionIds = excludedBuildDefinitionIds,
-                TeamProjects = teamProjects
+                ExcludedBuildDefinitionIds = CreateExcludedBuildDefinitionIds(),
+                TeamProjects = CreateTeamProjects()
             };
 
             await _buildsWatcher.Watch(
@@ -159,6 +147,27 @@ namespace LightHouse.UI.ViewModels
                 buildProviderSettings: buildProviderSettings,
                 refreshInterval: LighthouseSettings.RefreshInterval,
                 onRefreshAction: ProcessBuildsStatus);
+        }
+
+        private List<string> CreateTeamProjects()
+        {
+            return LighthouseSettings.Projects
+                .Split(',')
+                .Select(p => p.TrimStart().TrimEnd())
+                .ToList();
+        }
+
+        private List<long> CreateExcludedBuildDefinitionIds()
+        {
+            if(string.IsNullOrWhiteSpace(LighthouseSettings.ExcludeBuildDefinitionIds))
+                return new List<long>();
+
+            return LighthouseSettings
+                .ExcludeBuildDefinitionIds
+                .Replace(" ", "")
+                .Split(',')
+                .Select(long.Parse)
+                .ToList();
         }
 
         private void ProcessBuildsStatus(LastBuildsStatus buildsStatus)

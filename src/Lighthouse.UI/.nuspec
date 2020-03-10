@@ -8,6 +8,7 @@
     <projectUrl>https://github.com/josdeweger/lighthouse</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Build status light for TFS and Azure DevOps (former VSTS)</description>
+    <summary>Build status light for TFS and Azure DevOps (former VSTS)</summary>
     <tags>status-light vsts devops lighthouse signal-light build-status delcom azure-devops ci continuous-integration</tags>
     <copyright>2020 Jos de Weger</copyright>
   </metadata>
