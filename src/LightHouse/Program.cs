@@ -33,8 +33,10 @@ namespace LightHouse
                     _signalLightController = _serviceProvider.GetService<IControlSignalLight>();
                     _buildStatusLightController = _serviceProvider.GetService<IControlBuildStatusLight>();
 
-                    if (_buildStatusLightController?.IsConnected == true)
-                        await Start(options);
+                    if (_buildStatusLightController?.IsConnected == false)
+                        _logger.Information("Signal light not connected! Continuing without device...");
+
+                    await Start(options);
 
                     _logger.Information("Press any key to exit");
                 });

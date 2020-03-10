@@ -28,9 +28,10 @@ namespace LightHouse
             serviceCollection.AddAutoMapper(GetAssembliesStartingWith("LightHouse."));
             serviceCollection.AddTransient<DevOpsClient>();
             serviceCollection.AddTransient<TfsClient>();
-            serviceCollection.AddTransient<IWatchBuilds, BuildsWatcher>();
-            serviceCollection.AddTransient<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
-            serviceCollection.AddTransient<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
+            serviceCollection.AddTransient<IProvideBuilds, OptionBasedBuildProvider>();
+            serviceCollection.AddSingleton<IWatchBuilds, BuildsWatcher>();
+            serviceCollection.AddSingleton<ITimeBuildStatusRefresh>(x => new BuildStatusRefreshTimer());
+            serviceCollection.AddSingleton<IProvideLastBuildsStatus, LastBuildsStatusProvider>();
             serviceCollection.AddSingleton<IControlBuildStatusLight, BuildStatusLightController>();
             serviceCollection.AddSingleton<IControlSignalLight, SignalLightController>();
             serviceCollection.AddSingleton<IUrlBuilder, DevOpsUrlBuilder>();
