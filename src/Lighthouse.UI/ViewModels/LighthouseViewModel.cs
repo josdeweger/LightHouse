@@ -133,6 +133,21 @@ namespace LightHouse.UI.ViewModels
 
             _logger.Information("Starting to watch build status...");
 
+            var teamProjects = LighthouseSettings.Projects
+                .Split(',')
+                .Select(p => p.TrimStart().TrimEnd())
+                .ToList();
+
+            var excludedBuildDefinitionIds = LighthouseSettings.ExcludeBuildDefinitionIds != null
+                ? LighthouseSettings
+                    .ExcludeBuildDefinitionIds
+                    .Replace(" ", "")
+                    .Split(',')
+                    .Select(p => p.TrimStart().TrimEnd())
+                    .Select(long.Parse)
+                    .ToList()
+                : new List<long>();
+
             var buildProviderSettings = new BuildProviderSettings
             {
                 AccessToken = LighthouseSettings.Token,
