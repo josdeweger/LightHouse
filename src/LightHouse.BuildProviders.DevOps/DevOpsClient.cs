@@ -49,7 +49,7 @@ namespace LightHouse.BuildProviders.DevOps
                 return responses
                     .SelectMany(response => response
                         .Builds
-                        .Where(bd => !excludedBuildDefinitionIds.Contains(bd.Id))
+                        .Where(bd => !excludedBuildDefinitionIds.Contains(bd.BuildDefinition.Id))
                         .Select(_mapper.Map<Build, Lib.Build>))
                     .ToList();
             }

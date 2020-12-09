@@ -280,3 +280,6 @@ src/LightHouse/run\.bat
 src/LightHouse/nuget-pack-and-choco-push.bat
 
 src/LightHouse/publish-pack-push.txt
+
+
+.DS_STORE

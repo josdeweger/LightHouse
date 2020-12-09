@@ -26,6 +26,9 @@ namespace LightHouse.BuildProviders.DevOps
 
     public class BuildDefinition
     {
+        [JsonProperty("id")]
+        public long Id { get; set; }
+        
         [JsonProperty("name")]
         public string Name { get; set; }
     }
